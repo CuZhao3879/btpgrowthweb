@@ -1,4 +1,5 @@
 import { NextSeo } from 'next-seo'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -192,7 +193,7 @@ export default function Projects() {
               Let&apos;s discuss how we can help you achieve similar results for your business.
             </p>
             <Button asChild size="lg" variant="secondary">
-              <a href="/contact">Start Your Project</a>
+              <Link href="/contact">Start Your Project</Link>
             </Button>
           </motion.div>
         </div>
