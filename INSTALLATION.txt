@@ -1,0 +1,99 @@
+================================================================================
+  BTP GROWTH SOLUTIONS - WEBSITE INSTALLATION GUIDE
+================================================================================
+
+QUICK START - 3 STEPS:
+----------------------
+
+1. INSTALL DEPENDENCIES (2 minutes)
+   
+   Open terminal/command prompt in this folder and run:
+   
+   npm install
+   
+   (Wait for installation to complete)
+
+
+2. CREATE ENVIRONMENT FILE (30 seconds)
+   
+   Windows:
+   copy .env.local.example .env.local
+   
+   Mac/Linux:
+   cp .env.local.example .env.local
+
+
+3. START DEVELOPMENT SERVER (30 seconds)
+   
+   npm run dev
+   
+   Then open browser to: http://localhost:3000
+
+
+SUCCESS! Your website is now running!
+
+================================================================================
+
+NEXT STEPS:
+-----------
+
+1. Update your company information in .env.local
+
+2. Customize the content:
+   - Homepage: pages/index.tsx
+   - About: pages/about.tsx
+   - Services: pages/services.tsx
+   - Projects: pages/projects.tsx
+   - Contact: pages/contact.tsx
+
+3. Add your images to: public/images/
+
+4. Change your brand color in: tailwind.config.ts
+
+================================================================================
+
+DOCUMENTATION:
+--------------
+
+GET_STARTED.md      - Start here! Quick setup guide
+README.md           - Complete documentation
+CUSTOMIZATION.md    - How to customize everything
+DEPLOYMENT.md       - How to deploy to production
+PROJECT_STRUCTURE.md - Understanding the file structure
+
+================================================================================
+
+SYSTEM REQUIREMENTS:
+--------------------
+
+- Node.js 18.0.0 or higher
+- npm 8.0.0 or higher
+- Modern web browser
+
+Check your versions:
+node --version
+npm --version
+
+================================================================================
+
+COMMON COMMANDS:
+----------------
+
+npm run dev     - Start development server
+npm run build   - Build for production
+npm start       - Start production server
+npm run lint    - Check code quality
+
+================================================================================
+
+SUPPORT:
+--------
+
+Email: info@btpgrowth.com
+Documentation: See markdown files in project root
+Online Help: https://nextjs.org/docs
+
+================================================================================
+
+© 2025 BTP Growth Solutions. All rights reserved.
+

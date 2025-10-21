@@ -1,0 +1,105 @@
+================================================================================
+  如何创建 .env.local 环境变量文件
+================================================================================
+
+📝 步骤1：在项目根目录创建文件
+
+   文件名：.env.local
+   位置：C:\Users\ngcuz\OneDrive\Desktop\btpgrowthweb\.env.local
+
+   (使用记事本、VS Code 或任何文本编辑器)
+
+================================================================================
+
+📋 步骤2：复制以下内容到文件中
+
+--------------------------------------------------------------------------------
+# 网站配置
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_NAME=BTP Growth Solutions
+
+# 联系表单（可选 - 如果使用外部服务）
+# NEXT_PUBLIC_FORM_ENDPOINT=https://formspree.io/f/YOUR_FORM_ID
+
+# 社交媒体链接
+NEXT_PUBLIC_FACEBOOK_URL=https://facebook.com/yourpage
+NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/yourpage
+NEXT_PUBLIC_LINKEDIN_URL=https://linkedin.com/company/yourcompany
+NEXT_PUBLIC_XIAOHONGSHU_URL=https://xiaohongshu.com/yourpage
+
+# 联系信息
+NEXT_PUBLIC_CONTACT_EMAIL=info@btpgrowth.com
+NEXT_PUBLIC_CONTACT_PHONE=+1 (555) 123-4567
+NEXT_PUBLIC_CONTACT_ADDRESS=123 Business St, City, State 12345
+--------------------------------------------------------------------------------
+
+================================================================================
+
+✏️ 步骤3：修改为您的实际信息
+
+   替换以下内容：
+
+   NEXT_PUBLIC_SITE_NAME=您的公司名称
+   NEXT_PUBLIC_CONTACT_EMAIL=您的真实邮箱@example.com
+   NEXT_PUBLIC_CONTACT_PHONE=您的电话号码
+   NEXT_PUBLIC_CONTACT_ADDRESS=您的公司地址
+   
+   以及所有社交媒体链接...
+
+================================================================================
+
+💾 步骤4：保存文件
+
+   确保：
+   - 文件名是 .env.local (不是 .env.local.txt)
+   - 保存在项目根目录
+   - 使用 UTF-8 编码
+
+================================================================================
+
+🔄 步骤5：重启开发服务器
+
+   1. 在终端按 Ctrl + C 停止服务器
+   2. 运行：npm run dev
+   3. 重新打开：http://localhost:3000
+
+================================================================================
+
+✅ 验证是否成功：
+
+   检查网站页脚：
+   - 邮箱应该显示您设置的邮箱
+   - 电话应该显示您设置的电话
+   - 地址应该显示您设置的地址
+
+================================================================================
+
+⚠️ 注意事项：
+
+   1. .env.local 文件已经在 .gitignore 中
+      (不会被提交到 Git，保护您的私密信息)
+
+   2. 所有以 NEXT_PUBLIC_ 开头的变量会暴露到浏览器
+      (不要在这里放敏感的 API 密钥)
+
+   3. 如果某个变量不需要，可以删除或注释掉（加 # 在行首）
+
+================================================================================
+
+🎯 快捷方式（Windows）：
+
+   使用命令行快速创建：
+
+   echo # Site Configuration > .env.local
+   echo NEXT_PUBLIC_SITE_URL=http://localhost:3000 >> .env.local
+   echo NEXT_PUBLIC_SITE_NAME=您的公司名 >> .env.local
+   echo NEXT_PUBLIC_CONTACT_EMAIL=您的邮箱 >> .env.local
+
+   然后用编辑器打开完善其他内容。
+
+================================================================================
+
+需要帮助？查看：CUSTOMIZATION.md 第 "Contact Information" 部分
+
+================================================================================
+
