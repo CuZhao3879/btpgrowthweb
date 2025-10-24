@@ -1,7 +1,10 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const ClientLogos = () => {
+  const { t } = useLanguage()
+  
   // Technology logos - Your actual logo images
   const technologies = [
     { name: 'Cursor', image: '/images/tech-logos/cursor.jpg' },
@@ -24,10 +27,10 @@ const ClientLogos = () => {
           className="text-center mb-12"
         >
           <h2 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-4">
-            The Technologies That Power Our Growth
+            {t('techLogos.title')}
           </h2>
           <p className="text-gray-600">
-            Leveraging cutting-edge tools and platforms to drive innovation and results
+            {t('techLogos.subtitle')}
           </p>
         </motion.div>
 
@@ -51,9 +54,9 @@ const ClientLogos = () => {
               {duplicatedTechs.map((tech, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 w-[300px] h-[150px] bg-white rounded-lg shadow-sm flex items-center justify-center p-6 hover:shadow-md transition-shadow"
+                  className="flex-shrink-0 w-40 h-20 bg-white rounded-lg shadow-sm flex items-center justify-center p-4 hover:shadow-md transition-shadow"
                 >
-                  {/* 400x200px JPG Logo - Your actual images */}
+                  {/* Technology logo image */}
                   <img
                     src={tech.image}
                     alt={tech.name}
@@ -61,7 +64,7 @@ const ClientLogos = () => {
                     onError={(e) => {
                       // Fallback to text if image not found
                       e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerHTML = `<span class="text-base text-gray-700 text-center font-semibold whitespace-nowrap">${tech.name}</span>`;
+                      e.currentTarget.parentElement!.innerHTML = `<span class="text-sm text-gray-700 text-center font-semibold whitespace-nowrap">${tech.name}</span>`;
                     }}
                   />
                 </div>

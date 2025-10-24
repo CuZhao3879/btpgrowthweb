@@ -4,37 +4,40 @@ import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Target, TrendingUp, Users, Megaphone, FileText, BarChart } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const ServicesPreview = () => {
+  const { t } = useLanguage()
+  
   const services = [
     {
-      title: 'Meta Ads Solutions',
-      description: 'Strategic Facebook and Instagram advertising campaigns that drive conversions and maximize ROI.',
+      title: t('services.metaAds.title'),
+      description: t('services.metaAds.description'),
       image: '/images/services/meta-ads.png',
     },
     {
-      title: 'Brand Development',
-      description: 'Develop a strong brand identity that stands out in the market.',
+      title: t('services.brandDevelopment.title'),
+      description: t('services.brandDevelopment.description'),
       image: '/images/services/brand-development.png',
     },
     {
-      title: 'Social Media Marketing',
-      description: 'Build and engage your audience across all major social platforms.',
+      title: t('services.socialMedia.title'),
+      description: t('services.socialMedia.description'),
       image: '/images/services/social-media.png',
     },
     {
-      title: 'Web Development',
-      description: 'Custom, responsive websites built with modern technologies for optimal performance.',
+      title: t('services.webDevelopment.title'),
+      description: t('services.webDevelopment.description'),
       image: '/images/services/web-development.png',
     },
     {
-      title: 'Software Development',
-      description: 'Tailored software solutions to streamline your operations and enhance productivity.',
+      title: t('services.softwareDevelopment.title'),
+      description: t('services.softwareDevelopment.description'),
       image: '/images/services/software-development.png',
     },
     {
-      title: 'SEO Optimization',
-      description: 'Improve your search rankings and drive organic traffic to your website.',
+      title: t('services.seoOptimization.title'),
+      description: t('services.seoOptimization.description'),
       image: '/images/services/seo-optimization.png',
     },
   ]
@@ -70,10 +73,10 @@ const ServicesPreview = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
-            Our Services
+            {t('services.title')}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Comprehensive growth solutions designed to help your business thrive in the digital age.
+            {t('services.subtitle')}
           </p>
         </motion.div>
 
@@ -122,7 +125,7 @@ const ServicesPreview = () => {
           className="text-center"
         >
           <Button asChild size="lg">
-            <Link href="/services">View All Services</Link>
+            <Link href="/services">{t('services.viewAll')}</Link>
           </Button>
         </motion.div>
       </div>

@@ -14,7 +14,7 @@ export default function Services() {
 
   const services = [
     {
-      image: '/images/services/meta-ads.jpg',
+      icon: Megaphone,
       title: 'Meta Ads Solutions',
       description: 'Strategic Facebook and Instagram advertising campaigns that drive conversions and maximize ROI.',
       features: [
@@ -24,6 +24,8 @@ export default function Services() {
         'A/B Testing & Optimization',
         'Performance Tracking & Reporting',
       ],
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-100',
       pricing: [
         {
           name: 'Starter',
@@ -47,7 +49,7 @@ export default function Services() {
       ],
     },
     {
-      image: '/images/services/brand-development.jpg',
+      icon: BarChart,
       title: 'Brand Development',
       description: 'Develop a strong brand identity that stands out in the market.',
       features: [
@@ -57,6 +59,8 @@ export default function Services() {
         'Messaging Framework',
         'Brand Positioning',
       ],
+      color: 'text-pink-600',
+      bgColor: 'bg-pink-100',
       pricing: [
         {
           name: 'Starter',
@@ -80,7 +84,7 @@ export default function Services() {
       ],
     },
     {
-      image: '/images/services/social-media.jpg',
+      icon: Users,
       title: 'Social Media Marketing',
       description: 'Build and engage your audience across all major social platforms.',
       features: [
@@ -90,6 +94,8 @@ export default function Services() {
         'Paid Social Advertising',
         'Influencer Partnerships',
       ],
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-100',
       pricing: [
         {
           name: 'Essentials',
@@ -113,7 +119,7 @@ export default function Services() {
       ],
     },
     {
-      image: '/images/services/web-development.jpg',
+      icon: FileText,
       title: 'Web Development',
       description: 'Custom, responsive websites built with modern technologies for optimal performance.',
       features: [
@@ -123,6 +129,8 @@ export default function Services() {
         'Performance Optimization',
         'Ongoing Maintenance & Support',
       ],
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-100',
       pricing: [
         {
           name: 'Landing Page',
@@ -146,7 +154,7 @@ export default function Services() {
       ],
     },
     {
-      image: '/images/services/software-development.jpg',
+      icon: Target,
       title: 'Software Development',
       description: 'Tailored software solutions to streamline your operations and enhance productivity.',
       features: [
@@ -156,6 +164,8 @@ export default function Services() {
         'API Development',
         'Cloud Solutions',
       ],
+      color: 'text-cyan-600',
+      bgColor: 'bg-cyan-100',
       pricing: [
         {
           name: 'MVP',
@@ -179,7 +189,7 @@ export default function Services() {
       ],
     },
     {
-      image: '/images/services/seo-optimization.jpg',
+      icon: TrendingUp,
       title: 'SEO Optimization',
       description: 'Improve your search rankings and drive organic traffic to your website.',
       features: [
@@ -189,6 +199,8 @@ export default function Services() {
         'Link Building',
         'Local SEO',
       ],
+      color: 'text-green-600',
+      bgColor: 'bg-green-100',
       pricing: [
         {
           name: 'Basic',
@@ -245,6 +257,8 @@ export default function Services() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => {
+              const Icon = service.icon
+
               return (
                 <motion.div
                   key={index}
@@ -254,17 +268,9 @@ export default function Services() {
                   transition={{ delay: index * 0.05, duration: 0.5 }}
                 >
                   <Card className="h-full hover:shadow-xl transition-shadow overflow-hidden group">
-                    {/* Service Image - 1080x1080px JPG */}
-                    <div className="relative w-full aspect-square bg-gray-100">
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          // Fallback to gradient if image not found
-                          e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080"%3E%3Crect width="1080" height="1080" fill="%233b82f6"/%3E%3Ctext x="50%25" y="50%25" font-size="48" fill="white" text-anchor="middle" dy=".3em"%3EService%3C/text%3E%3C/svg%3E';
-                        }}
-                      />
+                    {/* Service Icon */}
+                    <div className={`relative h-32 ${service.bgColor} flex items-center justify-center`}>
+                      <Icon className={`h-16 w-16 ${service.color}`} />
                     </div>
 
                     <CardHeader>
@@ -280,7 +286,7 @@ export default function Services() {
                       <ul className="space-y-2 mb-6">
                         {service.features.map((feature, idx) => (
                           <li key={idx} className="flex items-start space-x-2">
-                            <CheckCircle className="h-5 w-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                            <CheckCircle className={`h-5 w-5 ${service.color} mt-0.5 flex-shrink-0`} />
                             <span className="text-gray-700 text-sm">{feature}</span>
                           </li>
                         ))}
