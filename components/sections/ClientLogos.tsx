@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/contexts/LanguageContext'
 
@@ -54,18 +55,15 @@ const ClientLogos = () => {
               {duplicatedTechs.map((tech, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 w-64 h-32 bg-white rounded-lg shadow-sm flex items-center justify-center p-2 hover:shadow-md transition-shadow"
+                  className="flex-shrink-0 w-64 h-32 bg-white rounded-lg shadow-sm flex items-center justify-center p-2 hover:shadow-md transition-shadow relative"
                 >
                   {/* Technology logo image - fills container */}
-                  <img
+                  <Image
                     src={tech.image}
                     alt={tech.name}
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      // Fallback to text if image not found
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerHTML = `<span class="text-base text-gray-700 text-center font-semibold whitespace-nowrap">${tech.name}</span>`;
-                    }}
+                    width={256}
+                    height={128}
+                    className="object-contain"
                   />
                 </div>
               ))}

@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -93,16 +94,14 @@ const ServicesPreview = () => {
               <motion.div key={index} variants={itemVariants}>
                 <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-gray-200">
                   <CardHeader>
-                    <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center mb-4 overflow-hidden">
+                    <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center mb-4 overflow-hidden relative">
                       {/* Small icon image */}
-                      <img
+                      <Image
                         src={service.image}
                         alt={service.title}
-                        className="w-12 h-12 object-contain"
-                        onError={(e) => {
-                          // Fallback to gradient if image not found
-                          e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48"%3E%3Crect width="48" height="48" fill="%233b82f6"/%3E%3C/svg%3E';
-                        }}
+                        width={48}
+                        height={48}
+                        className="object-contain"
                       />
                     </div>
                     <CardTitle className="text-xl">{service.title}</CardTitle>

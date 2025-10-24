@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Instagram, Mail, Phone, BookMarked } from 'lucide-react'
 
 const Footer = () => {
@@ -53,19 +54,13 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                <img
+              <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 relative">
+                <Image
                   src="/images/logo.png"
                   alt="BTP Growth Logo"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Fallback to gradient background if image not found
-                    e.currentTarget.style.display = 'none';
-                    if (e.currentTarget.parentElement) {
-                      e.currentTarget.parentElement.className = 'w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center';
-                      e.currentTarget.parentElement.innerHTML = '<span class="text-white font-bold text-xl">BTP</span>';
-                    }
-                  }}
+                  width={48}
+                  height={48}
+                  className="object-cover"
                 />
               </div>
               <span className="font-heading font-bold text-xl text-white">

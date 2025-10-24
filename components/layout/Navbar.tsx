@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
@@ -44,19 +45,14 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-              <img
+            <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 relative">
+              <Image
                 src="/images/logo.png"
                 alt="BTP Growth Logo"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  // Fallback to gradient background if image not found
-                  e.currentTarget.style.display = 'none';
-                  if (e.currentTarget.parentElement) {
-                    e.currentTarget.parentElement.className = 'w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center';
-                    e.currentTarget.parentElement.innerHTML = '<span class="text-white font-bold text-xl">BTP</span>';
-                  }
-                }}
+                width={48}
+                height={48}
+                className="object-cover"
+                priority
               />
             </div>
             <span className="font-heading font-bold text-xl text-gray-900">
