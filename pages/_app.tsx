@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import { DefaultSeo } from 'next-seo'
 import Layout from '@/components/layout/Layout'
+import { LanguageProvider } from '@/contexts/LanguageContext'
 
 // Default SEO configuration
 const defaultSEO = {
@@ -31,9 +32,11 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <DefaultSeo {...defaultSEO} />
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <LanguageProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </LanguageProvider>
     </>
   )
 }

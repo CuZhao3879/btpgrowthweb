@@ -2,18 +2,12 @@ import React from 'react'
 import { motion } from 'framer-motion'
 
 const ClientLogos = () => {
-  // Technology logos/names - Replace with actual tech logos
+  // Technology logos - Your actual logo images
   const technologies = [
-    'Next.js',
-    'React',
-    'TypeScript',
-    'Tailwind CSS',
-    'Node.js',
-    'Python',
-    'AWS',
-    'Google Cloud',
-    'Meta Ads',
-    'Google Analytics',
+    { name: 'Cursor', image: '/images/tech-logos/cursor.jpg' },
+    { name: 'DigitalOcean', image: '/images/tech-logos/digitalocean.jpg' },
+    { name: 'Google Analytics', image: '/images/tech-logos/googleanalytics.jpg' },
+    { name: 'Meta', image: '/images/tech-logos/meta.jpg' },
   ]
 
   // Duplicate for seamless loop
@@ -57,12 +51,19 @@ const ClientLogos = () => {
               {duplicatedTechs.map((tech, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 w-40 h-20 bg-white rounded-lg shadow-sm flex items-center justify-center p-4 hover:shadow-md transition-shadow"
+                  className="flex-shrink-0 w-[200px] h-[100px] bg-white rounded-lg shadow-sm flex items-center justify-center p-4 hover:shadow-md transition-shadow"
                 >
-                  {/* Placeholder for tech logo - Replace with actual logo images */}
-                  <span className="text-sm text-gray-700 text-center font-semibold whitespace-nowrap">
-                    {tech}
-                  </span>
+                  {/* 400x200px JPG Logo - Replace with your actual images */}
+                  <img
+                    src={tech.image}
+                    alt={tech.name}
+                    className="max-w-full max-h-full object-contain"
+                    onError={(e) => {
+                      // Fallback to text if image not found
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerHTML = `<span class="text-sm text-gray-700 text-center font-semibold whitespace-nowrap">${tech.name}</span>`;
+                    }}
+                  />
                 </div>
               ))}
             </motion.div>

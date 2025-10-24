@@ -8,46 +8,34 @@ import { Target, TrendingUp, Users, Megaphone, FileText, BarChart } from 'lucide
 const ServicesPreview = () => {
   const services = [
     {
-      icon: Megaphone,
       title: 'Meta Ads Solutions',
       description: 'Strategic Facebook and Instagram advertising campaigns that drive conversions and maximize ROI.',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      image: '/images/services/meta-ads.png',
     },
     {
-      icon: TrendingUp,
-      title: 'SEO Optimization',
-      description: 'Improve your search rankings and drive organic traffic to your website.',
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
-    },
-    {
-      icon: Users,
-      title: 'Social Media Marketing',
-      description: 'Build and engage your audience across all major social platforms.',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
-    },
-    {
-      icon: FileText,
-      title: 'Web Development',
-      description: 'Custom, responsive websites built with modern technologies for optimal performance.',
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
-    },
-    {
-      icon: Target,
-      title: 'Software Development',
-      description: 'Tailored software solutions to streamline your operations and enhance productivity.',
-      color: 'text-cyan-600',
-      bgColor: 'bg-cyan-100',
-    },
-    {
-      icon: BarChart,
       title: 'Brand Development',
       description: 'Develop a strong brand identity that stands out in the market.',
-      color: 'text-pink-600',
-      bgColor: 'bg-pink-100',
+      image: '/images/services/brand-development.png',
+    },
+    {
+      title: 'Social Media Marketing',
+      description: 'Build and engage your audience across all major social platforms.',
+      image: '/images/services/social-media.png',
+    },
+    {
+      title: 'Web Development',
+      description: 'Custom, responsive websites built with modern technologies for optimal performance.',
+      image: '/images/services/web-development.png',
+    },
+    {
+      title: 'Software Development',
+      description: 'Tailored software solutions to streamline your operations and enhance productivity.',
+      image: '/images/services/software-development.png',
+    },
+    {
+      title: 'SEO Optimization',
+      description: 'Improve your search rankings and drive organic traffic to your website.',
+      image: '/images/services/seo-optimization.png',
     },
   ]
 
@@ -98,14 +86,22 @@ const ServicesPreview = () => {
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
         >
           {services.map((service, index) => {
-            const Icon = service.icon
             return (
               <motion.div key={index} variants={itemVariants}>
-                <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-gray-200">
+                <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-gray-200 overflow-hidden">
+                  <div className="relative w-full aspect-square bg-gray-100">
+                    {/* 1080x1080px PNG Icon - Replace with your actual images */}
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // Fallback to gradient if image not found
+                        e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080"%3E%3Crect width="1080" height="1080" fill="%233b82f6"/%3E%3Ctext x="50%25" y="50%25" font-size="48" fill="white" text-anchor="middle" dy=".3em"%3EIcon%3C/text%3E%3C/svg%3E';
+                      }}
+                    />
+                  </div>
                   <CardHeader>
-                    <div className={`w-12 h-12 rounded-lg ${service.bgColor} flex items-center justify-center mb-4`}>
-                      <Icon className={`h-6 w-6 ${service.color}`} />
-                    </div>
                     <CardTitle className="text-xl">{service.title}</CardTitle>
                     <CardDescription className="text-gray-600">
                       {service.description}

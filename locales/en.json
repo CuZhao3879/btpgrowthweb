@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "blog": "Blog",
+    "contact": "Contact Us"
+  },
+  "hero": {
+    "title": "Accelerate Your Business",
+    "titleHighlight": " Growth",
+    "description": "We drive business growth through innovation, intelligence, and technology — empowering small and medium enterprises to scale smarter, faster, and more sustainably.",
+    "cta": "Get Started",
+    "learnMore": "Learn More",
+    "features": {
+      "aiPowered": "AI-Powered",
+      "techDriven": "Technology-Driven",
+      "trustedPartnership": "Trusted Partnership"
+    }
+  },
+  "techLogos": {
+    "title": "The Technologies That Power Our Growth",
+    "subtitle": "Leveraging cutting-edge tools and platforms to drive innovation and results"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Comprehensive growth solutions designed to help your business thrive in the digital age.",
+    "viewAll": "View All Services",
+    "metaAds": {
+      "title": "Meta Ads Solutions",
+      "description": "Strategic Facebook and Instagram advertising campaigns that drive conversions and maximize ROI."
+    },
+    "brandDevelopment": {
+      "title": "Brand Development",
+      "description": "Develop a strong brand identity that stands out in the market."
+    },
+    "socialMedia": {
+      "title": "Social Media Marketing",
+      "description": "Build and engage your audience across all major social platforms."
+    },
+    "webDevelopment": {
+      "title": "Web Development",
+      "description": "Custom, responsive websites built with modern technologies for optimal performance."
+    },
+    "softwareDevelopment": {
+      "title": "Software Development",
+      "description": "Tailored software solutions to streamline your operations and enhance productivity."
+    },
+    "seoOptimization": {
+      "title": "SEO Optimization",
+      "description": "Improve your search rankings and drive organic traffic to your website."
+    }
+  },
+  "cta": {
+    "title": "Ready to Grow Your Business?",
+    "description": "Let's discuss how we can help you achieve your goals and take your business to the next level.",
+    "button": "Schedule a Consultation",
+    "getInTouch": "Get in Touch",
+    "viewServices": "View Our Services"
+  },
+  "footer": {
+    "description": "Empowering small and medium businesses with innovative growth solutions that combine technology, strategy, and creativity.",
+    "company": {
+      "title": "Company",
+      "home": "Home",
+      "about": "About Us",
+      "services": "Services",
+      "blog": "Blog",
+      "contact": "Contact"
+    },
+    "services": {
+      "title": "Services",
+      "metaAds": "Meta Ads Solutions",
+      "seo": "SEO Optimization",
+      "socialMedia": "Social Media Marketing",
+      "webDev": "Web Development",
+      "softwareDev": "Software Development",
+      "brandDev": "Brand Development"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "businessHours": "Business Hours"
+    },
+    "copyright": "© 2024 BTP Growth Solutions. All rights reserved."
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Innovation Meets Strategy",
+    "description": "We're a team of forward-thinking growth strategists dedicated to empowering small and medium businesses through innovation, intelligence, and technology.",
+    "mission": {
+      "title": "Our Mission",
+      "description": "To drive sustainable business growth through innovative strategies, cutting-edge technology, and data-driven insights."
+    },
+    "vision": {
+      "title": "Our Vision",
+      "description": "To be the most trusted growth partner for SMBs, enabling them to compete and thrive in the digital economy."
+    },
+    "values": {
+      "title": "Our Values",
+      "innovation": "Innovation",
+      "innovationDesc": "We embrace new technologies and creative approaches to solve business challenges.",
+      "integrity": "Integrity",
+      "integrityDesc": "We build trust through transparency, honesty, and ethical business practices.",
+      "results": "Results-Driven",
+      "resultsDesc": "We're committed to delivering measurable outcomes that impact your bottom line.",
+      "partnership": "Partnership",
+      "partnershipDesc": "We work alongside you as a true partner in your success."
+    }
+  },
+  "servicesPage": {
+    "title": "Our Services",
+    "subtitle": "Comprehensive growth solutions designed to accelerate your business growth and achieve your goals.",
+    "viewPricing": "View Pricing",
+    "pricing": {
+      "title": "Pricing Plans",
+      "getStarted": "Get Started",
+      "contactUs": "Contact Us",
+      "popular": "Most Popular"
+    },
+    "ctaTitle": "Ready to Get Started?",
+    "ctaDescription": "Let's discuss which services are right for your business and create a customized strategy for your success.",
+    "ctaButton": "Schedule a Consultation"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Insights, tips, and strategies to help you grow your business",
+    "readMore": "Read More",
+    "readTime": "min read",
+    "publishedOn": "Published on",
+    "relatedArticles": "Related Articles",
+    "previousArticle": "Previous Article",
+    "nextArticle": "Next Article",
+    "backToBlog": "Back to Blog"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in Touch",
+    "description": "Have a question or ready to start your growth journey? We'd love to hear from you.",
+    "form": {
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "company": "Company Name",
+      "message": "Your Message",
+      "submit": "Send Message",
+      "sending": "Sending..."
+    },
+    "info": {
+      "email": "Email",
+      "phone": "Phone",
+      "hours": "Business Hours",
+      "hoursValue": "Mon-Fri: 9:00 AM - 6:00 PM"
+    }
+  }
+}
+

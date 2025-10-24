@@ -5,11 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useLanguage } from '@/contexts/LanguageContext'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const router = useRouter()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,10 +23,10 @@ const Navbar = () => {
   }, [])
 
   const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About Us' },
-    { href: '/services', label: 'Services' },
-    { href: '/blog', label: 'Blog' },
+    { href: '/', label: t('nav.home') },
+    { href: '/about', label: t('nav.about') },
+    { href: '/services', label: t('nav.services') },
+    { href: '/blog', label: t('nav.blog') },
   ]
 
   const isActive = (path: string) => router.pathname === path
@@ -50,7 +53,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -65,23 +68,27 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
+            <LanguageSwitcher />
             <Button asChild size="sm">
-              <Link href="/contact">Contact Us</Link>
+              <Link href="/contact">{t('nav.contact')}</Link>
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6 text-gray-900" />
-            ) : (
-              <Menu className="h-6 w-6 text-gray-900" />
-            )}
-          </button>
+          {/* Mobile Menu Button & Language Switcher */}
+          <div className="md:hidden flex items-center space-x-2">
+            <LanguageSwitcher />
+            <button
+              className="p-2"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6 text-gray-900" />
+              ) : (
+                <Menu className="h-6 w-6 text-gray-900" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -112,7 +119,7 @@ const Navbar = () => {
                 </Link>
               ))}
               <Button asChild className="w-full mt-4">
-                <Link href="/contact">Contact Us</Link>
+                <Link href="/contact">{t('nav.contact')}</Link>
               </Button>
             </div>
           </motion.div>
