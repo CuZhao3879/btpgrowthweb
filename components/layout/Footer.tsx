@@ -52,8 +52,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
                 <img
                   src="/images/logo.png"
                   alt="BTP Growth Logo"
@@ -62,7 +62,7 @@ const Footer = () => {
                     // Fallback to gradient background if image not found
                     e.currentTarget.style.display = 'none';
                     if (e.currentTarget.parentElement) {
-                      e.currentTarget.parentElement.className = 'w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center';
+                      e.currentTarget.parentElement.className = 'w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center';
                       e.currentTarget.parentElement.innerHTML = '<span class="text-white font-bold text-xl">BTP</span>';
                     }
                   }}
