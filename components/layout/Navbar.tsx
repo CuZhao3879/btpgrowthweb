@@ -24,7 +24,6 @@ const Navbar = () => {
     { href: '/about', label: 'About Us' },
     { href: '/services', label: 'Services' },
     { href: '/blog', label: 'Blog' },
-    { href: '/contact', label: 'Contact' },
   ]
 
   const isActive = (path: string) => router.pathname === path
