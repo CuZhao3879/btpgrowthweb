@@ -88,20 +88,20 @@ const ServicesPreview = () => {
           {services.map((service, index) => {
             return (
               <motion.div key={index} variants={itemVariants}>
-                <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-gray-200 overflow-hidden">
-                  <div className="relative w-full aspect-square bg-gray-100">
-                    {/* 1080x1080px PNG Icon - Replace with your actual images */}
-                    <img
-                      src={service.image}
-                      alt={service.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        // Fallback to gradient if image not found
-                        e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080"%3E%3Crect width="1080" height="1080" fill="%233b82f6"/%3E%3Ctext x="50%25" y="50%25" font-size="48" fill="white" text-anchor="middle" dy=".3em"%3EIcon%3C/text%3E%3C/svg%3E';
-                      }}
-                    />
-                  </div>
+                <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-gray-200">
                   <CardHeader>
+                    <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center mb-4 overflow-hidden">
+                      {/* Small icon image */}
+                      <img
+                        src={service.image}
+                        alt={service.title}
+                        className="w-12 h-12 object-contain"
+                        onError={(e) => {
+                          // Fallback to gradient if image not found
+                          e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48"%3E%3Crect width="48" height="48" fill="%233b82f6"/%3E%3C/svg%3E';
+                        }}
+                      />
+                    </div>
                     <CardTitle className="text-xl">{service.title}</CardTitle>
                     <CardDescription className="text-gray-600">
                       {service.description}

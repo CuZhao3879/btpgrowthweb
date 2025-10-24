@@ -51,9 +51,9 @@ const ClientLogos = () => {
               {duplicatedTechs.map((tech, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 w-[200px] h-[100px] bg-white rounded-lg shadow-sm flex items-center justify-center p-4 hover:shadow-md transition-shadow"
+                  className="flex-shrink-0 w-[300px] h-[150px] bg-white rounded-lg shadow-sm flex items-center justify-center p-6 hover:shadow-md transition-shadow"
                 >
-                  {/* 400x200px JPG Logo - Replace with your actual images */}
+                  {/* 400x200px JPG Logo - Your actual images */}
                   <img
                     src={tech.image}
                     alt={tech.name}
@@ -61,7 +61,7 @@ const ClientLogos = () => {
                     onError={(e) => {
                       // Fallback to text if image not found
                       e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerHTML = `<span class="text-sm text-gray-700 text-center font-semibold whitespace-nowrap">${tech.name}</span>`;
+                      e.currentTarget.parentElement!.innerHTML = `<span class="text-base text-gray-700 text-center font-semibold whitespace-nowrap">${tech.name}</span>`;
                     }}
                   />
                 </div>
