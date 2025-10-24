@@ -54,13 +54,13 @@ const ClientLogos = () => {
               {duplicatedTechs.map((tech, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 w-64 h-32 bg-white rounded-lg shadow-sm flex items-center justify-center p-6 hover:shadow-md transition-shadow"
+                  className="flex-shrink-0 w-64 h-32 bg-white rounded-lg shadow-sm flex items-center justify-center p-2 hover:shadow-md transition-shadow"
                 >
-                  {/* Technology logo image - 400x200px */}
+                  {/* Technology logo image - fills container */}
                   <img
                     src={tech.image}
                     alt={tech.name}
-                    className="max-w-full max-h-full object-contain"
+                    className="w-full h-full object-contain"
                     onError={(e) => {
                       // Fallback to text if image not found
                       e.currentTarget.style.display = 'none';
