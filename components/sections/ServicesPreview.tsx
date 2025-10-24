@@ -8,9 +8,9 @@ import { Target, TrendingUp, Users, Megaphone, FileText, BarChart } from 'lucide
 const ServicesPreview = () => {
   const services = [
     {
-      icon: Target,
-      title: 'Digital Marketing Strategy',
-      description: 'Comprehensive strategies tailored to your business goals and target audience.',
+      icon: Megaphone,
+      title: 'Meta Ads Solutions',
+      description: 'Strategic Facebook and Instagram advertising campaigns that drive conversions and maximize ROI.',
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
     },
@@ -29,25 +29,25 @@ const ServicesPreview = () => {
       bgColor: 'bg-purple-100',
     },
     {
-      icon: Megaphone,
-      title: 'Content Marketing',
-      description: 'Create compelling content that resonates with your target market.',
+      icon: FileText,
+      title: 'Web Development',
+      description: 'Custom, responsive websites built with modern technologies for optimal performance.',
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
     },
     {
-      icon: FileText,
+      icon: Target,
+      title: 'Software Development',
+      description: 'Tailored software solutions to streamline your operations and enhance productivity.',
+      color: 'text-cyan-600',
+      bgColor: 'bg-cyan-100',
+    },
+    {
+      icon: BarChart,
       title: 'Brand Development',
       description: 'Develop a strong brand identity that stands out in the market.',
       color: 'text-pink-600',
       bgColor: 'bg-pink-100',
-    },
-    {
-      icon: BarChart,
-      title: 'Analytics & Reporting',
-      description: 'Track performance and make data-driven decisions for growth.',
-      color: 'text-cyan-600',
-      bgColor: 'bg-cyan-100',
     },
   ]
 
@@ -85,7 +85,7 @@ const ServicesPreview = () => {
             Our Services
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Comprehensive marketing solutions designed to help your business thrive in the digital age.
+            Comprehensive growth solutions designed to help your business thrive in the digital age.
           </p>
         </motion.div>
 

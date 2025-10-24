@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react'
+import { Instagram, Mail, Phone, BookMarked } from 'lucide-react'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -9,14 +9,14 @@ const Footer = () => {
     company: [
       { label: 'About Us', href: '/about' },
       { label: 'Services', href: '/services' },
-      { label: 'Projects', href: '/projects' },
+      { label: 'Blog', href: '/blog' },
       { label: 'Contact', href: '/contact' },
     ],
     services: [
-      { label: 'Digital Marketing', href: '/services#digital-marketing' },
+      { label: 'Meta Ads Solutions', href: '/services#meta-ads' },
       { label: 'SEO Optimization', href: '/services#seo' },
-      { label: 'Social Media', href: '/services#social-media' },
-      { label: 'Content Creation', href: '/services#content' },
+      { label: 'Social Media Marketing', href: '/services#social-media' },
+      { label: 'Web Development', href: '/services#web-dev' },
     ],
     legal: [
       { label: 'Privacy Policy', href: '/privacy' },
@@ -27,22 +27,22 @@ const Footer = () => {
 
   const socialLinks = [
     { 
-      icon: Facebook, 
-      href: process.env.NEXT_PUBLIC_FACEBOOK_URL || '#', 
-      label: 'Facebook',
-      color: 'hover:text-blue-600'
-    },
-    { 
       icon: Instagram, 
       href: process.env.NEXT_PUBLIC_INSTAGRAM_URL || '#', 
       label: 'Instagram',
       color: 'hover:text-pink-600'
     },
     { 
-      icon: Linkedin, 
-      href: process.env.NEXT_PUBLIC_LINKEDIN_URL || '#', 
-      label: 'LinkedIn',
-      color: 'hover:text-blue-700'
+      icon: BookMarked, 
+      href: process.env.NEXT_PUBLIC_XIAOHONGSHU_URL || '#', 
+      label: '小红书',
+      color: 'hover:text-red-600'
+    },
+    { 
+      icon: Mail, 
+      href: `mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'marketing@btpgrowth.com'}`, 
+      label: 'Email',
+      color: 'hover:text-blue-600'
     },
   ]
 
@@ -61,7 +61,7 @@ const Footer = () => {
               </span>
             </div>
             <p className="text-sm text-gray-400">
-              Empowering small and medium businesses with innovative marketing solutions 
+              Empowering small and medium businesses with innovative growth solutions 
               to accelerate growth and achieve success.
             </p>
             <div className="flex space-x-4">
@@ -124,26 +124,20 @@ const Footer = () => {
               <li className="flex items-start space-x-3">
                 <Mail className="h-5 w-5 text-primary-500 mt-0.5 flex-shrink-0" />
                 <a
-                  href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'info@btpgrowth.com'}`}
+                  href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'marketing@btpgrowth.com'}`}
                   className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
-                  {process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'info@btpgrowth.com'}
+                  {process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'marketing@btpgrowth.com'}
                 </a>
               </li>
               <li className="flex items-start space-x-3">
                 <Phone className="h-5 w-5 text-primary-500 mt-0.5 flex-shrink-0" />
                 <a
-                  href={`tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE || '+1-555-123-4567'}`}
+                  href={`tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE || '+60-1110790823'}`}
                   className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
-                  {process.env.NEXT_PUBLIC_CONTACT_PHONE || '+1 (555) 123-4567'}
+                  {process.env.NEXT_PUBLIC_CONTACT_PHONE || '+60 1110790823'}
                 </a>
-              </li>
-              <li className="flex items-start space-x-3">
-                <MapPin className="h-5 w-5 text-primary-500 mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-gray-400">
-                  {process.env.NEXT_PUBLIC_CONTACT_ADDRESS || '123 Business St, City, State 12345'}
-                </span>
               </li>
             </ul>
           </div>

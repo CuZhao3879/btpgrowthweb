@@ -51,20 +51,14 @@ export default function Contact() {
     {
       icon: Mail,
       label: 'Email',
-      value: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'info@btpgrowth.com',
-      href: `mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'info@btpgrowth.com'}`,
+      value: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'marketing@btpgrowth.com',
+      href: `mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'marketing@btpgrowth.com'}`,
     },
     {
       icon: Phone,
       label: 'Phone',
-      value: process.env.NEXT_PUBLIC_CONTACT_PHONE || '+1 (555) 123-4567',
-      href: `tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE || '+1-555-123-4567'}`,
-    },
-    {
-      icon: MapPin,
-      label: 'Address',
-      value: process.env.NEXT_PUBLIC_CONTACT_ADDRESS || '123 Business St, City, State 12345',
-      href: '#',
+      value: process.env.NEXT_PUBLIC_CONTACT_PHONE || '+60 1110790823',
+      href: `tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE || '+60-1110790823'}`,
     },
     {
       icon: Clock,
@@ -242,19 +236,6 @@ export default function Contact() {
                       </div>
                     )
                   })}
-                </CardContent>
-              </Card>
-
-              {/* Map Placeholder */}
-              <Card>
-                <CardContent className="p-0">
-                  <div className="aspect-video bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center">
-                    <div className="text-center text-gray-500 p-6">
-                      <MapPin className="h-8 w-8 mx-auto mb-2" />
-                      <p className="text-sm">Map Placeholder</p>
-                      <p className="text-xs">Integrate Google Maps</p>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </motion.div>

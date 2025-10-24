@@ -23,7 +23,7 @@ const Navbar = () => {
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About Us' },
     { href: '/services', label: 'Services' },
-    { href: '/projects', label: 'Projects' },
+    { href: '/blog', label: 'Blog' },
     { href: '/contact', label: 'Contact' },
   ]
 
@@ -67,7 +67,7 @@ const Navbar = () => {
               </Link>
             ))}
             <Button asChild size="sm">
-              <Link href="/contact">Get Started</Link>
+              <Link href="/contact">Contact Us</Link>
             </Button>
           </div>
 
@@ -113,7 +113,7 @@ const Navbar = () => {
                 </Link>
               ))}
               <Button asChild className="w-full mt-4">
-                <Link href="/contact">Get Started</Link>
+                <Link href="/contact">Contact Us</Link>
               </Button>
             </div>
           </motion.div>

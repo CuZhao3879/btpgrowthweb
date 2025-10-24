@@ -1,38 +1,57 @@
 import { NextSeo } from 'next-seo'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { 
-  Target, TrendingUp, Users, Megaphone, FileText, BarChart, 
-  Mail, Video, CheckCircle 
+  Target, TrendingUp, Users, Megaphone, FileText, BarChart,
+  CheckCircle, X
 } from 'lucide-react'
-import Link from 'next/link'
 
 export default function Services() {
-  const [expandedService, setExpandedService] = useState<number | null>(null)
+  const [selectedService, setSelectedService] = useState<number | null>(null)
 
   const services = [
     {
-      icon: Target,
-      title: 'Digital Marketing Strategy',
-      shortDesc: 'Comprehensive strategies tailored to your business goals.',
-      fullDesc: 'We develop data-driven marketing strategies that align with your business objectives. Our approach includes market research, competitor analysis, audience targeting, and multi-channel planning to maximize your ROI.',
+      icon: Megaphone,
+      title: 'Meta Ads Solutions',
+      description: 'Strategic Facebook and Instagram advertising campaigns that drive conversions and maximize ROI.',
       features: [
-        'Market Research & Analysis',
-        'Competitor Benchmarking',
-        'Target Audience Profiling',
-        'Multi-Channel Strategy',
-        'KPI Definition & Tracking',
+        'Campaign Strategy & Planning',
+        'Ad Creative Development',
+        'Audience Targeting & Segmentation',
+        'A/B Testing & Optimization',
+        'Performance Tracking & Reporting',
       ],
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
+      pricing: [
+        {
+          name: 'Starter',
+          price: 'Contact Us',
+          description: 'Perfect for small businesses starting with Meta Ads',
+          features: ['Campaign setup', 'Basic targeting', 'Monthly reporting', 'Email support'],
+        },
+        {
+          name: 'Professional',
+          price: 'Contact Us',
+          description: 'Advanced campaigns for growing businesses',
+          features: ['All Starter features', 'Advanced targeting', 'A/B testing', 'Weekly reporting', 'Priority support'],
+          popular: true,
+        },
+        {
+          name: 'Enterprise',
+          price: 'Contact Us',
+          description: 'Comprehensive solution for large-scale operations',
+          features: ['All Professional features', 'Dedicated account manager', 'Custom strategy', 'Daily reporting', '24/7 support'],
+        },
+      ],
     },
     {
       icon: TrendingUp,
       title: 'SEO Optimization',
-      shortDesc: 'Improve rankings and drive organic traffic.',
-      fullDesc: 'Our SEO experts optimize your website for search engines using proven techniques. We focus on technical SEO, content optimization, link building, and local SEO to improve your visibility and attract qualified traffic.',
+      description: 'Improve your search rankings and drive organic traffic to your website.',
       features: [
         'Technical SEO Audit',
         'On-Page Optimization',
@@ -42,12 +61,32 @@ export default function Services() {
       ],
       color: 'text-green-600',
       bgColor: 'bg-green-100',
+      pricing: [
+        {
+          name: 'Basic',
+          price: 'Contact Us',
+          description: 'Essential SEO for local businesses',
+          features: ['Site audit', 'Keyword research', 'On-page optimization', 'Monthly reports'],
+        },
+        {
+          name: 'Growth',
+          price: 'Contact Us',
+          description: 'Comprehensive SEO for competitive markets',
+          features: ['All Basic features', 'Content strategy', 'Link building', 'Local SEO', 'Bi-weekly reports'],
+          popular: true,
+        },
+        {
+          name: 'Premium',
+          price: 'Contact Us',
+          description: 'Full-service SEO for enterprise',
+          features: ['All Growth features', 'Technical SEO', 'Competitor analysis', 'Custom strategy', 'Weekly reports'],
+        },
+      ],
     },
     {
       icon: Users,
       title: 'Social Media Marketing',
-      shortDesc: 'Build and engage your audience across platforms.',
-      fullDesc: 'We create and manage engaging social media campaigns across all major platforms. From content creation to community management, we help you build a strong social presence and connect with your audience.',
+      description: 'Build and engage your audience across all major social platforms.',
       features: [
         'Social Media Strategy',
         'Content Creation & Curation',
@@ -57,42 +96,102 @@ export default function Services() {
       ],
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
-    },
-    {
-      icon: Megaphone,
-      title: 'Content Marketing',
-      shortDesc: 'Create compelling content that converts.',
-      fullDesc: 'Our content team creates high-quality, engaging content that resonates with your target audience. We develop blog posts, whitepapers, case studies, and more to establish your brand as an industry leader.',
-      features: [
-        'Content Strategy & Planning',
-        'Blog Writing & Publishing',
-        'Video Content Production',
-        'Infographic Design',
-        'Case Studies & Whitepapers',
+      pricing: [
+        {
+          name: 'Essentials',
+          price: 'Contact Us',
+          description: 'Social media management basics',
+          features: ['2 platforms', '10 posts/month', 'Basic analytics', 'Monthly strategy'],
+        },
+        {
+          name: 'Professional',
+          price: 'Contact Us',
+          description: 'Complete social media solution',
+          features: ['4 platforms', '20 posts/month', 'Community management', 'Detailed analytics', 'Weekly strategy'],
+          popular: true,
+        },
+        {
+          name: 'Premium',
+          price: 'Contact Us',
+          description: 'Full-service social media management',
+          features: ['All platforms', 'Unlimited posts', 'Influencer outreach', 'Advanced analytics', 'Daily optimization'],
+        },
       ],
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
-    },
-    {
-      icon: Mail,
-      title: 'Email Marketing',
-      shortDesc: 'Nurture leads and drive conversions.',
-      fullDesc: 'We design and execute targeted email campaigns that nurture leads and drive conversions. Our approach includes segmentation, personalization, automation, and continuous optimization.',
-      features: [
-        'Email Campaign Strategy',
-        'Template Design',
-        'List Segmentation',
-        'Marketing Automation',
-        'A/B Testing & Optimization',
-      ],
-      color: 'text-red-600',
-      bgColor: 'bg-red-100',
     },
     {
       icon: FileText,
+      title: 'Web Development',
+      description: 'Custom, responsive websites built with modern technologies for optimal performance.',
+      features: [
+        'Custom Design & Development',
+        'Responsive & Mobile-First',
+        'SEO-Friendly Structure',
+        'Performance Optimization',
+        'Ongoing Maintenance & Support',
+      ],
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-100',
+      pricing: [
+        {
+          name: 'Landing Page',
+          price: 'Contact Us',
+          description: 'Single page website for campaigns',
+          features: ['1-page design', 'Responsive layout', 'Contact form', 'Basic SEO'],
+        },
+        {
+          name: 'Business Website',
+          price: 'Contact Us',
+          description: 'Multi-page website for businesses',
+          features: ['5-10 pages', 'Custom design', 'CMS integration', 'Advanced SEO', '3 months support'],
+          popular: true,
+        },
+        {
+          name: 'E-Commerce',
+          price: 'Contact Us',
+          description: 'Full online store solution',
+          features: ['Unlimited pages', 'Shopping cart', 'Payment gateway', 'Inventory management', '6 months support'],
+        },
+      ],
+    },
+    {
+      icon: Target,
+      title: 'Software Development',
+      description: 'Tailored software solutions to streamline your operations and enhance productivity.',
+      features: [
+        'Custom Software Solutions',
+        'System Integration',
+        'Mobile App Development',
+        'API Development',
+        'Cloud Solutions',
+      ],
+      color: 'text-cyan-600',
+      bgColor: 'bg-cyan-100',
+      pricing: [
+        {
+          name: 'MVP',
+          price: 'Contact Us',
+          description: 'Minimum viable product',
+          features: ['Core functionality', 'Basic UI/UX', '3 revisions', '1 month support'],
+        },
+        {
+          name: 'Full Product',
+          price: 'Contact Us',
+          description: 'Complete software solution',
+          features: ['Advanced features', 'Custom UI/UX', 'Unlimited revisions', 'Testing', '3 months support'],
+          popular: true,
+        },
+        {
+          name: 'Enterprise',
+          price: 'Contact Us',
+          description: 'Large-scale custom solutions',
+          features: ['Complex systems', 'Integration', 'Scalable architecture', 'Full documentation', '12 months support'],
+        },
+      ],
+    },
+    {
+      icon: BarChart,
       title: 'Brand Development',
-      shortDesc: 'Build a strong, memorable brand identity.',
-      fullDesc: 'We help you develop a compelling brand identity that stands out in the market. From logo design to brand guidelines, we ensure consistency across all touchpoints.',
+      description: 'Develop a strong brand identity that stands out in the market.',
       features: [
         'Brand Strategy',
         'Logo & Visual Identity',
@@ -102,48 +201,35 @@ export default function Services() {
       ],
       color: 'text-pink-600',
       bgColor: 'bg-pink-100',
-    },
-    {
-      icon: Video,
-      title: 'Video Marketing',
-      shortDesc: 'Engage audiences with compelling video content.',
-      fullDesc: 'We produce professional video content that tells your story and engages your audience. From promotional videos to explainer content, we handle all aspects of video marketing.',
-      features: [
-        'Video Strategy',
-        'Script Writing',
-        'Production & Editing',
-        'YouTube Optimization',
-        'Video Advertising',
+      pricing: [
+        {
+          name: 'Starter',
+          price: 'Contact Us',
+          description: 'Essential brand elements',
+          features: ['Logo design', 'Color palette', 'Typography', '2 revisions'],
+        },
+        {
+          name: 'Professional',
+          price: 'Contact Us',
+          description: 'Complete brand identity',
+          features: ['All Starter features', 'Brand guidelines', 'Business cards', 'Social media templates', '5 revisions'],
+          popular: true,
+        },
+        {
+          name: 'Premium',
+          price: 'Contact Us',
+          description: 'Full brand development',
+          features: ['All Professional features', 'Brand strategy', 'Market research', 'Complete stationery', 'Unlimited revisions'],
+        },
       ],
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-100',
-    },
-    {
-      icon: BarChart,
-      title: 'Analytics & Reporting',
-      shortDesc: 'Make data-driven decisions for growth.',
-      fullDesc: 'We provide comprehensive analytics and reporting to track your marketing performance. Our detailed insights help you understand what\'s working and where to optimize.',
-      features: [
-        'Custom Dashboard Setup',
-        'Performance Tracking',
-        'Monthly Reports',
-        'Conversion Analysis',
-        'ROI Measurement',
-      ],
-      color: 'text-cyan-600',
-      bgColor: 'bg-cyan-100',
     },
   ]
-
-  const toggleService = (index: number) => {
-    setExpandedService(expandedService === index ? null : index)
-  }
 
   return (
     <>
       <NextSeo
         title="Our Services | BTP Growth Solutions"
-        description="Comprehensive digital marketing services including SEO, social media, content marketing, and more. Tailored solutions for your business growth."
+        description="Comprehensive growth solutions including Meta Ads, SEO, social media marketing, web development, software development, and brand development."
       />
 
       {/* Hero Section */}
@@ -159,20 +245,19 @@ export default function Services() {
               Our Services
             </h1>
             <p className="text-xl text-gray-600">
-              Comprehensive marketing solutions designed to accelerate your business growth 
+              Comprehensive growth solutions designed to accelerate your business growth 
               and achieve your goals.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Services Grid */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => {
               const Icon = service.icon
-              const isExpanded = expandedService === index
 
               return (
                 <motion.div
@@ -182,41 +267,37 @@ export default function Services() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.05, duration: 0.5 }}
                 >
-                  <Card className="h-full hover:shadow-lg transition-shadow">
+                  <Card className="h-full hover:shadow-xl transition-shadow overflow-hidden group">
+                    {/* Service Icon */}
+                    <div className={`relative h-32 ${service.bgColor} flex items-center justify-center`}>
+                      <Icon className={`h-16 w-16 ${service.color}`} />
+                    </div>
+
                     <CardHeader>
-                      <div className={`w-12 h-12 rounded-lg ${service.bgColor} flex items-center justify-center mb-4`}>
-                        <Icon className={`h-6 w-6 ${service.color}`} />
-                      </div>
-                      <CardTitle className="text-2xl">{service.title}</CardTitle>
+                      <CardTitle className="text-2xl group-hover:text-primary-600 transition-colors">
+                        {service.title}
+                      </CardTitle>
                       <CardDescription className="text-base">
-                        {service.shortDesc}
+                        {service.description}
                       </CardDescription>
                     </CardHeader>
+
                     <CardContent>
-                      {isExpanded && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="mb-4"
-                        >
-                          <p className="text-gray-600 mb-4">{service.fullDesc}</p>
-                          <ul className="space-y-2">
-                            {service.features.map((feature, idx) => (
-                              <li key={idx} className="flex items-start space-x-2">
-                                <CheckCircle className={`h-5 w-5 ${service.color} mt-0.5 flex-shrink-0`} />
-                                <span className="text-gray-700">{feature}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </motion.div>
-                      )}
+                      <ul className="space-y-2 mb-6">
+                        {service.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-start space-x-2">
+                            <CheckCircle className={`h-5 w-5 ${service.color} mt-0.5 flex-shrink-0`} />
+                            <span className="text-gray-700 text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
                       <Button
-                        variant="ghost"
-                        onClick={() => toggleService(index)}
-                        className="w-full"
+                        onClick={() => setSelectedService(index)}
+                        variant="outline"
+                        className="w-full group-hover:bg-primary-50 transition-colors"
                       >
-                        {isExpanded ? 'Show Less' : 'Learn More'}
+                        View Pricing
                       </Button>
                     </CardContent>
                   </Card>
@@ -226,6 +307,79 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      {/* Pricing Modal */}
+      {selectedService !== null && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedService(null)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
+              <h2 className="text-2xl font-heading font-bold">
+                {services[selectedService].title} - Pricing Plans
+              </h2>
+              <button
+                onClick={() => setSelectedService(null)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <div className="grid md:grid-cols-3 gap-6">
+                {services[selectedService].pricing.map((plan, idx) => (
+                  <Card
+                    key={idx}
+                    className={`relative ${plan.popular ? 'border-2 border-primary-500 shadow-lg' : ''}`}
+                  >
+                    {plan.popular && (
+                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span className="bg-primary-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                          Most Popular
+                        </span>
+                      </div>
+                    )}
+
+                    <CardHeader className="text-center pb-4">
+                      <CardTitle className="text-xl mb-2">{plan.name}</CardTitle>
+                      <div className="text-3xl font-bold text-primary-600 mb-2">
+                        {plan.price}
+                      </div>
+                      <CardDescription>{plan.description}</CardDescription>
+                    </CardHeader>
+
+                    <CardContent>
+                      <ul className="space-y-3 mb-6">
+                        {plan.features.map((feature, fIdx) => (
+                          <li key={fIdx} className="flex items-start space-x-2">
+                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm text-gray-700">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <Button
+                        asChild
+                        className={`w-full ${plan.popular ? '' : 'variant-outline'}`}
+                        variant={plan.popular ? 'default' : 'outline'}
+                      >
+                        <Link href="/contact">Get Started</Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* CTA Section */}
       <section className="py-20 bg-gray-50">
@@ -252,4 +406,3 @@ export default function Services() {
     </>
   )
 }
-

@@ -27,28 +27,6 @@ export default function About() {
     },
   ]
 
-  const team = [
-    {
-      name: 'John Smith',
-      role: 'CEO & Founder',
-      bio: 'With over 15 years of marketing experience, John leads our vision.',
-    },
-    {
-      name: 'Sarah Johnson',
-      role: 'Head of Strategy',
-      bio: 'Sarah crafts data-driven strategies that deliver exceptional results.',
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Creative Director',
-      bio: 'Michael brings creative excellence to every campaign we launch.',
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'Client Success Manager',
-      bio: 'Emily ensures our clients achieve their goals and beyond.',
-    },
-  ]
 
   return (
     <>
@@ -70,8 +48,8 @@ export default function About() {
               About BTP Growth Solutions
             </h1>
             <p className="text-xl text-gray-600">
-              We&apos;re a team of passionate marketing professionals dedicated to helping 
-              small and medium businesses achieve extraordinary growth.
+              We&apos;re a team of forward-thinking growth strategists dedicated to empowering 
+              small and medium businesses through innovation, intelligence, and technology.
             </p>
           </motion.div>
         </div>
@@ -168,49 +146,89 @@ export default function About() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="py-20 bg-white">
+      {/* Technologies Section */}
+      <section className="py-16 bg-gray-50 overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
-              Meet Our Team
+            <h2 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-4">
+              The Technologies That Power Our Growth
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              A diverse group of experts passionate about your success.
+            <p className="text-gray-600">
+              Leveraging cutting-edge tools and platforms to drive innovation and results
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, index) => (
+          {/* Scrolling logos */}
+          <div className="relative">
+            <div className="flex overflow-hidden">
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                className="text-center"
+                className="flex gap-8 items-center"
+                animate={{
+                  x: [0, -1600],
+                }}
+                transition={{
+                  x: {
+                    repeat: Infinity,
+                    repeatType: "loop",
+                    duration: 30,
+                    ease: "linear",
+                  },
+                }}
               >
-                {/* Placeholder for team member photo */}
-                <div className="w-48 h-48 mx-auto mb-4 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center">
-                  <div className="text-gray-500 text-xs">
-                    <p>Photo</p>
-                    <p>Placeholder</p>
+                {['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Python', 'AWS', 'Google Cloud', 'Meta Ads', 'Google Analytics', 'Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Python', 'AWS', 'Google Cloud', 'Meta Ads', 'Google Analytics'].map((tech, index) => (
+                  <div
+                    key={index}
+                    className="flex-shrink-0 w-40 h-20 bg-white rounded-lg shadow-sm flex items-center justify-center p-4 hover:shadow-md transition-shadow"
+                  >
+                    <span className="text-sm text-gray-700 text-center font-semibold whitespace-nowrap">
+                      {tech}
+                    </span>
                   </div>
-                </div>
-                <h3 className="text-xl font-heading font-semibold mb-1">
-                  {member.name}
-                </h3>
-                <p className="text-primary-600 font-medium mb-2">{member.role}</p>
-                <p className="text-gray-600 text-sm">{member.bio}</p>
+                ))}
               </motion.div>
-            ))}
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-br from-primary-600 to-primary-800 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
+        </div>
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto"
+          >
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-6">
+              Ready to Grow Your Business?
+            </h2>
+            <p className="text-lg md:text-xl text-blue-100 mb-8">
+              Let&apos;s discuss how we can help you achieve your goals 
+              and take your business to the next level.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="px-8 py-3 bg-white text-primary-600 rounded-md font-semibold hover:bg-blue-50 transition-colors">
+                <a href="/contact">Get in Touch</a>
+              </button>
+              <button className="px-8 py-3 bg-transparent text-white border-2 border-white rounded-md font-semibold hover:bg-white hover:text-primary-600 transition-colors">
+                <a href="/services">View Our Services</a>
+              </button>
+            </div>
+          </motion.div>
         </div>
       </section>
     </>

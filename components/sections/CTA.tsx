@@ -25,7 +25,7 @@ const CTA = () => {
             Ready to Grow Your Business?
           </h2>
           <p className="text-lg md:text-xl text-blue-100 mb-8">
-            Let&apos;s discuss how we can help you achieve your marketing goals 
+            Let&apos;s discuss how we can help you achieve your goals 
             and take your business to the next level.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -36,7 +36,7 @@ const CTA = () => {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="bg-transparent text-white border-white hover:bg-white hover:text-primary-600">
-              <Link href="/projects">View Our Work</Link>
+              <Link href="/services">View Our Services</Link>
             </Button>
           </div>
         </motion.div>
