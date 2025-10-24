@@ -1,4 +1,5 @@
 import { NextSeo } from 'next-seo'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Users, Target, Zap, Award } from 'lucide-react'
@@ -221,12 +222,12 @@ export default function About() {
               and take your business to the next level.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-3 bg-white text-primary-600 rounded-md font-semibold hover:bg-blue-50 transition-colors">
-                <a href="/contact">Get in Touch</a>
-              </button>
-              <button className="px-8 py-3 bg-transparent text-white border-2 border-white rounded-md font-semibold hover:bg-white hover:text-primary-600 transition-colors">
-                <a href="/services">View Our Services</a>
-              </button>
+              <Link href="/contact" className="px-8 py-3 bg-white text-primary-600 rounded-md font-semibold hover:bg-blue-50 transition-colors text-center">
+                Get in Touch
+              </Link>
+              <Link href="/services" className="px-8 py-3 bg-transparent text-white border-2 border-white rounded-md font-semibold hover:bg-white hover:text-primary-600 transition-colors text-center">
+                View Our Services
+              </Link>
             </div>
           </motion.div>
         </div>
