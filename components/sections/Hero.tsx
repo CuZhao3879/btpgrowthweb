@@ -15,12 +15,12 @@ const Hero = () => {
   ]
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
+    <section className="relative bg-white overflow-hidden">
       {/* 3D Abstract Background with Glass Morphism */}
-      <div className="absolute inset-0 -z-10">
-        {/* Animated gradient orbs */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-white to-cyan-50/80">
+        {/* Animated gradient orbs - more visible */}
         <motion.div
-          className="absolute top-0 -left-4 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+          className="absolute top-10 left-10 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl opacity-20"
           animate={{
             x: [0, 100, 0],
             y: [0, -50, 0],
@@ -33,11 +33,11 @@ const Hero = () => {
           }}
         />
         <motion.div
-          className="absolute top-0 -right-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+          className="absolute top-20 right-10 w-96 h-96 bg-cyan-400 rounded-full filter blur-3xl opacity-20"
           animate={{
-            x: [0, -100, 0],
+            x: [0, -80, 0],
             y: [0, 100, 0],
-            scale: [1, 1.1, 1],
+            scale: [1, 1.15, 1],
           }}
           transition={{
             duration: 18,
@@ -46,11 +46,11 @@ const Hero = () => {
           }}
         />
         <motion.div
-          className="absolute -bottom-8 left-20 w-72 h-72 bg-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+          className="absolute bottom-10 left-1/3 w-96 h-96 bg-indigo-400 rounded-full filter blur-3xl opacity-15"
           animate={{
-            x: [0, 50, 0],
-            y: [0, -80, 0],
-            scale: [1, 1.15, 1],
+            x: [0, 60, 0],
+            y: [0, -70, 0],
+            scale: [1, 1.1, 1],
           }}
           transition={{
             duration: 22,
@@ -59,17 +59,16 @@ const Hero = () => {
           }}
         />
         
-        {/* Glass morphism layers */}
-        <div className="absolute inset-0 backdrop-blur-3xl bg-white/40" />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-blue-50/30 to-white/60" />
+        {/* Glass morphism overlay - subtle */}
+        <div className="absolute inset-0 backdrop-blur-sm bg-white/30" />
         
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
+        {/* Subtle tech grid pattern */}
+        <div className="absolute inset-0 opacity-[0.15]" style={{
           backgroundImage: `
-            linear-gradient(rgba(59, 130, 246, 0.5) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(59, 130, 246, 0.5) 1px, transparent 1px)
+            linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)
           `,
-          backgroundSize: '50px 50px'
+          backgroundSize: '60px 60px'
         }} />
       </div>
       
