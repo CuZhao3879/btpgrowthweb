@@ -14,11 +14,11 @@ const ClientLogos = () => {
   const technologies = [
     { name: 'Meta', image: '/images/tech-logos/meta.jpg' },
     { name: 'Cursor', image: '/images/tech-logos/cursor.jpg' },
+    { name: 'McAfee', image: '/images/tech-logos/mcafee.jpg' },
     { name: 'Adobe', image: '/images/tech-logos/adobe.jpg' },
     { name: 'GitHub', image: '/images/tech-logos/github.jpg' },
     { name: 'DigitalOcean', image: '/images/tech-logos/digitalocean.jpg' },
     { name: 'Google Analytics', image: '/images/tech-logos/googleanalytics.jpg' },
-    { name: 'React', image: '/images/tech-logos/react.jpg' },
     { name: 'Node.js', image: '/images/tech-logos/nodejs.jpg' },
   ]
 
