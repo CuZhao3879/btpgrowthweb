@@ -25,22 +25,24 @@ const ClientLogos = () => {
   // Duplicate for seamless loop (4 copies for smooth scrolling)
   const duplicatedTechs = [...technologies, ...technologies, ...technologies, ...technologies]
   
-  // 自动滚动动画
+  // 自动滚动动画和位置重置
   useAnimationFrame((t, delta) => {
+    // 无论是否拖动，都要检查位置重置
+    const itemWidth = 256 + 32 // logo width + gap
+    const resetPoint = -(itemWidth * technologies.length)
+    
+    // 自动滚动（仅在非拖动状态）
     if (!isDragging) {
       let moveBy = baseVelocity * (delta / 1000)
       baseX.set(baseX.get() + moveBy)
-      
-      // 重置位置以实现无限循环
-      const itemWidth = 256 + 32 // logo width + gap
-      const resetPoint = -(itemWidth * technologies.length)
-      
-      if (baseX.get() <= resetPoint) {
-        baseX.set(baseX.get() + itemWidth * technologies.length)
-      }
-      if (baseX.get() >= 0) {
-        baseX.set(baseX.get() - itemWidth * technologies.length)
-      }
+    }
+    
+    // 位置重置（始终检查，确保无限循环）
+    if (baseX.get() <= resetPoint) {
+      baseX.set(baseX.get() + itemWidth * technologies.length)
+    }
+    if (baseX.get() >= 0) {
+      baseX.set(baseX.get() - itemWidth * technologies.length)
     }
   })
 
@@ -69,11 +71,11 @@ const ClientLogos = () => {
             className="flex gap-8 items-center cursor-grab active:cursor-grabbing"
             style={{ x: baseX }}
             drag="x"
-            dragElastic={0.2}
+            dragElastic={0}
             onDragStart={() => setIsDragging(true)}
             onDragEnd={() => setIsDragging(false)}
-            dragConstraints={{ left: -2000, right: 2000 }}
-            dragTransition={{ power: 0.2, timeConstant: 200 }}
+            dragConstraints={{ left: -10000, right: 10000 }}
+            dragTransition={{ power: 0.1, timeConstant: 150 }}
           >
             {duplicatedTechs.map((tech, index) => (
               <motion.div
