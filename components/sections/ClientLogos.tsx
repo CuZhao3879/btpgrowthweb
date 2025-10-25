@@ -44,11 +44,11 @@ const ClientLogos = () => {
           <motion.div
             className="flex gap-8 items-center"
             drag="x"
-            dragConstraints={{ left: -100 * technologies.length, right: 0 }}
+            dragConstraints={{ left: -(256 + 32) * technologies.length, right: 0 }}
             dragElastic={0.1}
             dragTransition={{ bounceStiffness: 200, bounceDamping: 20 }}
             animate={{
-              x: [0, -100 * technologies.length],
+              x: [0, -(256 + 32) * technologies.length],
             }}
             transition={{
               x: {
