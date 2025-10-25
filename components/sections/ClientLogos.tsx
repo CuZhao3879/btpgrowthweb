@@ -39,40 +39,44 @@ const ClientLogos = () => {
           </p>
         </motion.div>
 
-        {/* Scrolling logos */}
-        <div className="relative">
-          <div className="flex overflow-hidden">
-            <motion.div
-              className="flex gap-8 items-center"
-              animate={{
-                x: [0, -100 * technologies.length],
-              }}
-              transition={{
-                x: {
-                  repeat: Infinity,
-                  repeatType: "loop",
-                  duration: 30,
-                  ease: "linear",
-                },
-              }}
-            >
-              {duplicatedTechs.map((tech, index) => (
-                <div
-                  key={index}
-                  className="flex-shrink-0 w-64 h-32 bg-white rounded-lg shadow-sm flex items-center justify-center p-2 hover:shadow-md transition-shadow relative"
-                >
-                  {/* Technology logo image - fills container */}
-                  <Image
-                    src={tech.image}
-                    alt={tech.name}
-                    width={256}
-                    height={128}
-                    className="object-contain"
-                  />
-                </div>
-              ))}
-            </motion.div>
-          </div>
+        {/* Scrolling logos - with drag support */}
+        <div className="relative overflow-hidden cursor-grab active:cursor-grabbing">
+          <motion.div
+            className="flex gap-8 items-center"
+            drag="x"
+            dragConstraints={{ left: -100 * technologies.length, right: 0 }}
+            dragElastic={0.1}
+            dragTransition={{ bounceStiffness: 200, bounceDamping: 20 }}
+            animate={{
+              x: [0, -100 * technologies.length],
+            }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 20,
+                ease: "linear",
+              },
+            }}
+            whileTap={{ cursor: "grabbing" }}
+          >
+            {duplicatedTechs.map((tech, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 w-64 h-32 bg-white rounded-lg shadow-sm flex items-center justify-center p-2 hover:shadow-md transition-shadow relative pointer-events-none"
+              >
+                {/* Technology logo image - fills container */}
+                <Image
+                  src={tech.image}
+                  alt={tech.name}
+                  width={256}
+                  height={128}
+                  className="object-contain select-none"
+                  draggable={false}
+                />
+              </div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </section>
