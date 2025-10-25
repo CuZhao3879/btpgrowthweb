@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useAnimationFrame } from 'framer-motion'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 const ClientLogos = () => {
   const { t } = useLanguage()
+  const baseVelocity = -20 // 基础速度（负数向左滚动）
+  const baseX = useMotionValue(0)
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
   
   // Technology logos - Your actual logo images (in order)
   const technologies = [
@@ -18,8 +22,27 @@ const ClientLogos = () => {
     { name: 'Node.js', image: '/images/tech-logos/nodejs.jpg' },
   ]
 
-  // Duplicate for seamless loop
-  const duplicatedTechs = [...technologies, ...technologies]
+  // Duplicate for seamless loop (4 copies for smooth scrolling)
+  const duplicatedTechs = [...technologies, ...technologies, ...technologies, ...technologies]
+  
+  // 自动滚动动画
+  useAnimationFrame((t, delta) => {
+    if (!isDragging) {
+      let moveBy = baseVelocity * (delta / 1000)
+      baseX.set(baseX.get() + moveBy)
+      
+      // 重置位置以实现无限循环
+      const itemWidth = 256 + 32 // logo width + gap
+      const resetPoint = -(itemWidth * technologies.length)
+      
+      if (baseX.get() <= resetPoint) {
+        baseX.set(baseX.get() + itemWidth * technologies.length)
+      }
+      if (baseX.get() >= 0) {
+        baseX.set(baseX.get() - itemWidth * technologies.length)
+      }
+    }
+  })
 
   return (
     <section className="py-16 bg-gray-50 overflow-hidden">
@@ -40,30 +63,24 @@ const ClientLogos = () => {
         </motion.div>
 
         {/* Scrolling logos - with drag support */}
-        <div className="relative overflow-hidden cursor-grab active:cursor-grabbing">
+        <div className="relative overflow-hidden">
           <motion.div
-            className="flex gap-8 items-center"
+            ref={scrollerRef}
+            className="flex gap-8 items-center cursor-grab active:cursor-grabbing"
+            style={{ x: baseX }}
             drag="x"
-            dragConstraints={{ left: -(256 + 32) * technologies.length, right: 0 }}
-            dragElastic={0.1}
-            dragTransition={{ bounceStiffness: 200, bounceDamping: 20 }}
-            animate={{
-              x: [0, -(256 + 32) * technologies.length],
-            }}
-            transition={{
-              x: {
-                repeat: Infinity,
-                repeatType: "loop",
-                duration: 20,
-                ease: "linear",
-              },
-            }}
-            whileTap={{ cursor: "grabbing" }}
+            dragElastic={0.2}
+            onDragStart={() => setIsDragging(true)}
+            onDragEnd={() => setIsDragging(false)}
+            dragConstraints={{ left: -2000, right: 2000 }}
+            dragTransition={{ power: 0.2, timeConstant: 200 }}
           >
             {duplicatedTechs.map((tech, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="flex-shrink-0 w-64 h-32 bg-white rounded-lg shadow-sm flex items-center justify-center p-2 hover:shadow-md transition-shadow relative pointer-events-none"
+                className="flex-shrink-0 w-64 h-32 bg-white rounded-lg shadow-sm flex items-center justify-center p-2 hover:shadow-md transition-shadow relative"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
                 {/* Technology logo image - fills container */}
                 <Image
@@ -71,10 +88,10 @@ const ClientLogos = () => {
                   alt={tech.name}
                   width={256}
                   height={128}
-                  className="object-contain select-none"
+                  className="object-contain select-none pointer-events-none"
                   draggable={false}
                 />
-              </div>
+              </motion.div>
             ))}
           </motion.div>
         </div>
