@@ -16,62 +16,6 @@ const Hero = () => {
 
   return (
     <section className="relative bg-white overflow-hidden">
-      {/* 3D Abstract Background with Glass Morphism */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-white to-cyan-50/80">
-        {/* Animated gradient orbs - more visible */}
-        <motion.div
-          className="absolute top-10 left-10 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl opacity-20"
-          animate={{
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <motion.div
-          className="absolute top-20 right-10 w-96 h-96 bg-cyan-400 rounded-full filter blur-3xl opacity-20"
-          animate={{
-            x: [0, -80, 0],
-            y: [0, 100, 0],
-            scale: [1, 1.15, 1],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <motion.div
-          className="absolute bottom-10 left-1/3 w-96 h-96 bg-indigo-400 rounded-full filter blur-3xl opacity-15"
-          animate={{
-            x: [0, 60, 0],
-            y: [0, -70, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 22,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        
-        {/* Glass morphism overlay - subtle */}
-        <div className="absolute inset-0 backdrop-blur-sm bg-white/30" />
-        
-        {/* Subtle tech grid pattern */}
-        <div className="absolute inset-0 opacity-[0.15]" style={{
-          backgroundImage: `
-            linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px'
-        }} />
-      </div>
-      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
         <div className="max-w-4xl mx-auto">
           {/* Centered Content */}
