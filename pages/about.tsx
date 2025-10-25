@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Users, Target, Zap, Award } from 'lucide-react'
+import ClientLogos from '@/components/sections/ClientLogos'
 
 export default function About() {
   const values = [
@@ -147,56 +148,8 @@ export default function About() {
         </div>
       </section>
 
-      {/* Technologies Section */}
-      <section className="py-16 bg-gray-50 overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-4">
-              The Technologies That Power Our Growth
-            </h2>
-            <p className="text-gray-600">
-              Leveraging cutting-edge tools and platforms to drive innovation and results
-            </p>
-          </motion.div>
-
-          {/* Scrolling logos */}
-          <div className="relative">
-            <div className="flex overflow-hidden">
-              <motion.div
-                className="flex gap-8 items-center"
-                animate={{
-                  x: [0, -1600],
-                }}
-                transition={{
-                  x: {
-                    repeat: Infinity,
-                    repeatType: "loop",
-                    duration: 30,
-                    ease: "linear",
-                  },
-                }}
-              >
-                {['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Python', 'AWS', 'Google Cloud', 'Meta Ads', 'Google Analytics', 'Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Python', 'AWS', 'Google Cloud', 'Meta Ads', 'Google Analytics'].map((tech, index) => (
-                  <div
-                    key={index}
-                    className="flex-shrink-0 w-40 h-20 bg-white rounded-lg shadow-sm flex items-center justify-center p-4 hover:shadow-md transition-shadow"
-                  >
-                    <span className="text-sm text-gray-700 text-center font-semibold whitespace-nowrap">
-                      {tech}
-                    </span>
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Technologies Section - Same as Home Page */}
+      <ClientLogos />
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-primary-600 to-primary-800 relative overflow-hidden">

@@ -6,12 +6,16 @@ import { useLanguage } from '@/contexts/LanguageContext'
 const ClientLogos = () => {
   const { t } = useLanguage()
   
-  // Technology logos - Your actual logo images
+  // Technology logos - Your actual logo images (in order)
   const technologies = [
+    { name: 'Meta', image: '/images/tech-logos/meta.jpg' },
     { name: 'Cursor', image: '/images/tech-logos/cursor.jpg' },
+    { name: 'Adobe', image: '/images/tech-logos/adobe.jpg' },
+    { name: 'GitHub', image: '/images/tech-logos/github.jpg' },
     { name: 'DigitalOcean', image: '/images/tech-logos/digitalocean.jpg' },
     { name: 'Google Analytics', image: '/images/tech-logos/googleanalytics.jpg' },
-    { name: 'Meta', image: '/images/tech-logos/meta.jpg' },
+    { name: 'React', image: '/images/tech-logos/react.jpg' },
+    { name: 'Node.js', image: '/images/tech-logos/nodejs.jpg' },
   ]
 
   // Duplicate for seamless loop
