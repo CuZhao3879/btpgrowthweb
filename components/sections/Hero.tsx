@@ -33,9 +33,9 @@ const Hero = () => {
         height: 'auto'
       }}
     >
-      {/* Background Image - Full clarity, edge to edge */}
+      {/* Background Image - Desktop */}
       <div 
-        className="absolute inset-0"
+        className="absolute inset-0 hidden md:block"
         style={{ 
           width: '100%',
           height: '100%',
@@ -49,13 +49,40 @@ const Hero = () => {
       >
         <Image
           src="/images/hero-bg.jpg"
-          alt="Hero Background"
+          alt="Hero Background Desktop"
           fill
           className="object-cover object-center"
           priority
           quality={100}
           style={{ objectFit: 'cover', width: '100%', height: '100%' }}
         />
+      </div>
+
+      {/* Background Image - Mobile */}
+      <div 
+        className="absolute inset-0 block md:hidden"
+        style={{ 
+          width: '100%',
+          height: '100%',
+          left: 0, 
+          right: 0, 
+          top: 0, 
+          bottom: 0,
+          margin: 0,
+          padding: 0
+        }}
+      >
+        <Image
+          src="/images/hero-bg-phonee.jpeg"
+          alt="Hero Background Mobile"
+          fill
+          className="object-cover object-top"
+          priority
+          quality={100}
+          style={{ objectFit: 'cover', objectPosition: 'top', width: '100%', height: '100%' }}
+        />
+        {/* Dark overlay for mobile - 80% opacity */}
+        <div className="absolute inset-0 bg-black/80"></div>
       </div>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative z-10">
