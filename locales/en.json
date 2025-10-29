@@ -8,8 +8,9 @@
   },
   "hero": {
     "badge": "Your Growth Partner",
-    "title": "Accelerate Your Business",
-    "titleHighlight": " Growth",
+    "title": "Accelerate Your",
+    "titleMiddle": "Business",
+    "titleHighlight": "Growth",
     "description": "We drive business growth through innovation, intelligence, and technology — empowering small and medium enterprises to scale smarter, faster, and more sustainably.",
     "cta": "Get Started",
     "learnMore": "Learn More",

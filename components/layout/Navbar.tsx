@@ -14,14 +14,27 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const router = useRouter()
   const { t } = useLanguage()
+  
+  // Check if we're on the homepage
+  const isHomePage = router.pathname === '/'
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
+      // On homepage: Change to white navbar after scrolling past Hero section
+      // On other pages: Always show white navbar
+      if (isHomePage) {
+        setIsScrolled(window.scrollY > window.innerHeight * 0.95)
+      } else {
+        setIsScrolled(true)
+      }
     }
+    
+    // Initial check
+    handleScroll()
+    
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isHomePage])
 
   const navLinks = [
     { href: '/', label: t('nav.home') },
@@ -35,14 +48,14 @@ const Navbar = () => {
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
         isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-md'
-          : 'bg-transparent'
+          ? 'bg-white shadow-md border-b border-gray-200'
+          : 'bg-black border-b border-white/20'
       )}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
             <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 relative">
@@ -55,7 +68,10 @@ const Navbar = () => {
                 priority
               />
             </div>
-            <span className="font-heading font-bold text-xl text-gray-900">
+            <span className={cn(
+              "font-heading font-bold text-xl transition-colors duration-500",
+              isScrolled ? 'text-gray-900' : 'text-white'
+            )}>
               BTP Growth
             </span>
           </Link>
@@ -67,33 +83,42 @@ const Navbar = () => {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'text-sm font-medium transition-colors hover:text-primary-600',
-                  isActive(link.href)
-                    ? 'text-primary-600'
-                    : 'text-gray-700'
+                  'text-sm font-medium transition-colors duration-500',
+                  isScrolled
+                    ? (isActive(link.href) ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600')
+                    : (isActive(link.href) ? 'text-blue-400' : 'text-white hover:text-blue-300')
                 )}
               >
                 {link.label}
               </Link>
             ))}
-            <LanguageSwitcher />
-            <Button asChild size="sm">
+            <LanguageSwitcher isDark={!isScrolled && isHomePage} />
+            <Button asChild size="sm" className={cn(
+              "transition-colors duration-500",
+              isScrolled ? '' : 'bg-blue-600 hover:bg-blue-700'
+            )}>
               <Link href="/contact">{t('nav.contact')}</Link>
             </Button>
           </div>
 
           {/* Mobile Menu Button & Language Switcher */}
           <div className="md:hidden flex items-center space-x-2">
-            <LanguageSwitcher />
+            <LanguageSwitcher isDark={!isScrolled && isHomePage} />
             <button
               className="p-2"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
-                <X className="h-6 w-6 text-gray-900" />
+                <X className={cn(
+                  "h-6 w-6 transition-colors duration-500",
+                  isScrolled ? 'text-gray-900' : 'text-white'
+                )} />
               ) : (
-                <Menu className="h-6 w-6 text-gray-900" />
+                <Menu className={cn(
+                  "h-6 w-6 transition-colors duration-500",
+                  isScrolled ? 'text-gray-900' : 'text-white'
+                )} />
               )}
             </button>
           </div>
