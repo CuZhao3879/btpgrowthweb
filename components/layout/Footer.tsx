@@ -1,23 +1,27 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Instagram, Mail, Phone, BookMarked } from 'lucide-react'
+import { Mail, Phone } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const Footer = () => {
+  const { t } = useLanguage()
   const currentYear = new Date().getFullYear()
 
   const footerLinks = {
     company: [
-      { label: 'About Us', href: '/about' },
-      { label: 'Services', href: '/services' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Contact', href: '/contact' },
+      { label: t('footer.company.about'), href: '/about' },
+      { label: t('footer.company.services'), href: '/services' },
+      { label: t('footer.company.blog'), href: '/blog' },
+      { label: t('footer.company.contact'), href: '/contact' },
     ],
     services: [
-      { label: 'Meta Ads Solutions', href: '/services#meta-ads' },
-      { label: 'SEO Optimization', href: '/services#seo' },
-      { label: 'Social Media Marketing', href: '/services#social-media' },
-      { label: 'Web Development', href: '/services#web-dev' },
+      { label: t('footer.services.metaAds'), href: '/services#meta-ads' },
+      { label: t('footer.services.brandDev'), href: '/services#brand-development' },
+      { label: t('footer.services.socialMedia'), href: '/services#social-media' },
+      { label: t('footer.services.webDev'), href: '/services#web-dev' },
+      { label: t('footer.services.softwareDev'), href: '/services#software-development' },
+      { label: t('footer.services.seo'), href: '/services#seo' },
     ],
     legal: [
       { label: 'Privacy Policy', href: '/privacy' },
@@ -28,22 +32,19 @@ const Footer = () => {
 
   const socialLinks = [
     { 
-      icon: Instagram, 
+      image: '/images/services/instagram.png',
       href: process.env.NEXT_PUBLIC_INSTAGRAM_URL || '#', 
       label: 'Instagram',
-      color: 'hover:text-pink-600'
     },
     { 
-      icon: BookMarked, 
+      image: '/images/services/xiaohongshu.png',
       href: process.env.NEXT_PUBLIC_XIAOHONGSHU_URL || '#', 
       label: '小红书',
-      color: 'hover:text-red-600'
     },
     { 
-      icon: Mail, 
+      image: '/images/services/gmail.png',
       href: `mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'marketing@btpgrowth.com'}`, 
       label: 'Email',
-      color: 'hover:text-blue-600'
     },
   ]
 
@@ -68,22 +69,26 @@ const Footer = () => {
               </span>
             </div>
             <p className="text-sm text-gray-400">
-              Empowering small and medium businesses with innovative growth solutions 
-              to accelerate growth and achieve success.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social) => {
-                const Icon = social.icon
                 return (
                   <a
                     key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`text-gray-400 transition-colors ${social.color}`}
+                    className="transition-opacity hover:opacity-80"
                     aria-label={social.label}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Image
+                      src={social.image}
+                      alt={social.label}
+                      width={36}
+                      height={36}
+                      className="h-9 w-9 object-contain"
+                    />
                   </a>
                 )
               })}
@@ -92,7 +97,7 @@ const Footer = () => {
 
           {/* Company Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Company</h3>
+            <h3 className="text-white font-semibold mb-4">{t('footer.company.title')}</h3>
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
@@ -109,7 +114,7 @@ const Footer = () => {
 
           {/* Services Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Services</h3>
+            <h3 className="text-white font-semibold mb-4">{t('footer.services.title')}</h3>
             <ul className="space-y-2">
               {footerLinks.services.map((link) => (
                 <li key={link.href}>
@@ -126,7 +131,7 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div className="col-span-2 lg:col-span-1">
-            <h3 className="text-white font-semibold mb-4">Contact Us</h3>
+            <h3 className="text-white font-semibold mb-4">{t('footer.contact.title')}</h3>
             <ul className="space-y-3">
               <li className="flex items-start space-x-3">
                 <Mail className="h-5 w-5 text-primary-500 mt-0.5 flex-shrink-0" />
@@ -140,10 +145,10 @@ const Footer = () => {
               <li className="flex items-start space-x-3">
                 <Phone className="h-5 w-5 text-primary-500 mt-0.5 flex-shrink-0" />
                 <a
-                  href={`tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE || '+60-1110790823'}`}
+                  href={`tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE || '+60105421018'}`}
                   className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
-                  {process.env.NEXT_PUBLIC_CONTACT_PHONE || '+60 1110790823'}
+                  {process.env.NEXT_PUBLIC_CONTACT_PHONE || '+60105421018'}
                 </a>
               </li>
             </ul>
@@ -154,7 +159,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-gray-400">
-              © {currentYear} BTP Growth Solutions. All rights reserved.
+              {t('footer.copyright').replace('2024', currentYear.toString())}
             </p>
             <div className="flex space-x-6">
               {footerLinks.legal.map((link) => (

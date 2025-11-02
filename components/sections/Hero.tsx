@@ -7,7 +7,7 @@ import { ArrowRight, CheckCircle } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 const Hero = () => {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   
   const features = [
     t('hero.features.aiPowered'),
@@ -105,11 +105,22 @@ const Hero = () => {
                 </span>
               </motion.div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold leading-tight">
-                <span className="text-white">{t('hero.title')}</span>
-                <br />
-                <span className="text-white">{t('hero.titleMiddle')} </span>
-                <span className="text-blue-400">{t('hero.titleHighlight')}</span>
+              <h1 className="text-[2.5rem] md:text-[3.125rem] lg:text-[4rem] font-heading font-bold leading-tight">
+                {language === 'zh' ? (
+                  <>
+                    <span className="text-white">{t('hero.titleLine1')}</span>
+                    <br />
+                    <span className="text-white">{t('hero.titleLine2Part1')}</span>
+                    <span className="text-blue-400">{t('hero.titleLine2Part2')}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-white">{t('hero.title')}</span>
+                    <br />
+                    <span className="text-white">{t('hero.titleMiddle')} </span>
+                    <span className="text-blue-400">{t('hero.titleHighlight')}</span>
+                  </>
+                )}
               </h1>
               
               <p className="text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed">

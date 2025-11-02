@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "seedream": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\ngcuz\\jimengpic-mcp-byteplus\\build\\index.js"
+      ],
+      "env": {
+        "ARK_API_KEY": "f7d36463-4f4e-4335-8656-68b71c9dc656",
+        "MODEL_ID": "seedream-4-0-250828"
+      }
+    }
+  }
+}
+
+

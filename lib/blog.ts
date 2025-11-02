@@ -45,8 +45,13 @@ export function getAllPosts(): BlogPost[] {
       }
     })
 
+  // Filter out incomplete posts (Untitled or Uncategorized)
+  const filteredPosts = allPostsData.filter(
+    (post) => post.title !== 'Untitled' && post.category !== 'Uncategorized'
+  )
+
   // Sort posts by date
-  return allPostsData.sort((a, b) => {
+  return filteredPosts.sort((a, b) => {
     if (a.date < b.date) {
       return 1
     } else {
@@ -81,6 +86,14 @@ export function getRelatedPosts(currentSlug: string, category: string, limit = 3
   const allPosts = getAllPosts()
   return allPosts
     .filter((post) => post.slug !== currentSlug && post.category === category)
+    .slice(0, limit)
+}
+
+export function getLatestPosts(currentSlug: string, limit = 3): BlogPost[] {
+  const allPosts = getAllPosts()
+  // getAllPosts already sorts by date (newest first)
+  return allPosts
+    .filter((post) => post.slug !== currentSlug)
     .slice(0, limit)
 }
 

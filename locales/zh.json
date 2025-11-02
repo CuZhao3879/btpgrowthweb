@@ -11,6 +11,9 @@
     "title": "加速您的",
     "titleMiddle": "企业",
     "titleHighlight": "增长",
+    "titleLine1": "通过AI和营销渠道",
+    "titleLine2Part1": "加速您的企业",
+    "titleLine2Part2": "增长",
     "description": "我们通过创新、智能和技术推动业务增长——赋能中小企业更智慧、更快速、更可持续地扩展。",
     "cta": "开始合作",
     "learnMore": "了解更多",
@@ -58,7 +61,21 @@
     "description": "让我们讨论如何帮助您实现目标，将您的业务提升到新的水平。",
     "button": "预约咨询",
     "getInTouch": "联系我们",
-    "viewServices": "查看我们的服务"
+    "viewServices": "查看我们的服务",
+    "companyName": "BTP Growth Solutions",
+    "subtitle": "您值得信赖的合作伙伴，利用AI和营销创新推动真正的业务增长。",
+    "features": {
+      "allInOne": "一体化解决方案",
+      "aiPowered": "AI驱动",
+      "techDriven": "技术驱动"
+    },
+    "takeBusinessNext": "将您的业务提升到新的水平",
+    "letsStart": "开始合作",
+    "contact": {
+      "emailLabel": "给我们发邮件：",
+      "phoneLabel": "或者直接致电：",
+      "businessHours": "营业时间"
+    }
   },
   "footer": {
     "description": "通过结合技术、战略和创造力的创新增长解决方案，赋能中小企业。",
@@ -89,24 +106,34 @@
     "title": "关于我们",
     "subtitle": "创新与策略的融合",
     "description": "我们是一支具有前瞻性思维的增长战略团队，致力于通过创新、智能和技术赋能中小企业。",
+    "heroTitle": "关于 BTP Growth Solutions",
+    "heroDescription": "我们是一支具有前瞻性思维的增长战略团队，致力于通过创新、智能和技术赋能中小企业。",
     "mission": {
       "title": "我们的使命",
-      "description": "通过创新策略、尖端技术和数据驱动的洞察力推动可持续的业务增长。"
+      "description": "在 BTP Growth Solutions，我们相信每家企业都应该有机会在数字时代蓬勃发展。我们的使命是让世界级的营销专业知识变得触手可及。",
+      "description2": "我们结合数据驱动的策略、卓越的创意和尖端技术，为客户提供可衡量的成果。您的增长是我们的热情所在。"
     },
     "vision": {
       "title": "我们的愿景",
       "description": "成为中小企业最值得信赖的增长合作伙伴，使他们能够在数字经济中竞争和繁荣。"
     },
     "values": {
-      "title": "我们的价值观",
-      "innovation": "创新",
-      "innovationDesc": "我们拥抱新技术和创造性方法来解决业务挑战。",
-      "integrity": "诚信",
-      "integrityDesc": "我们通过透明、诚实和道德的商业实践建立信任。",
+      "title": "我们的核心价值观",
+      "subtitle": "这些原则指导我们所做的一切，并塑造我们与客户合作的方式。",
       "results": "结果导向",
-      "resultsDesc": "我们致力于提供影响您底线的可衡量成果。",
-      "partnership": "合作伙伴关系",
-      "partnershipDesc": "我们作为您成功的真正合作伙伴与您并肩工作。"
+      "resultsDesc": "我们专注于直接影响您底线的可衡量成果。",
+      "clientCentric": "以客户为中心",
+      "clientCentricDesc": "您的成功就是我们的成功。我们建立长期合作伙伴关系。",
+      "innovation": "创新",
+      "innovationDesc": "我们走在趋势前沿，为您提供竞争优势。",
+      "excellence": "卓越",
+      "excellenceDesc": "我们在所做的一切中保持最高标准。"
+    },
+    "cta": {
+      "title": "准备好发展您的业务了吗？",
+      "description": "让我们讨论如何帮助您实现目标，将您的业务提升到新的水平。",
+      "getInTouch": "联系我们",
+      "viewServices": "查看我们的服务"
     }
   },
   "servicesPage": {
@@ -117,7 +144,9 @@
       "title": "价格方案",
       "getStarted": "开始使用",
       "contactUs": "联系我们",
-      "popular": "最受欢迎"
+      "popular": "最受欢迎",
+      "month": "/月",
+      "oneTime": "一次性付款"
     },
     "ctaTitle": "准备开始了吗？",
     "ctaDescription": "让我们讨论哪些服务适合您的业务，并为您的成功制定定制策略。",
@@ -132,26 +161,43 @@
     "relatedArticles": "相关文章",
     "previousArticle": "上一篇文章",
     "nextArticle": "下一篇文章",
-    "backToBlog": "返回博客"
+    "backToBlog": "返回博客",
+    "notFound": "未找到文章",
+    "noPosts": "未找到文章",
+    "noPostsMessage": "还没有博客文章。请稍后再来查看！",
+    "noPostsHint": "将 Markdown 文件添加到"
   },
   "contact": {
     "title": "联系我们",
     "subtitle": "取得联系",
     "description": "有问题或准备开始您的增长之旅？我们很乐意听到您的声音。",
+    "heroTitle": "取得联系",
+    "heroDescription": "准备好发展您的业务了吗？让我们开始讨论您的目标。",
     "form": {
-      "name": "全名",
-      "email": "电子邮件地址",
+      "title": "发送消息",
+      "description": "填写下面的表单，我们将在24小时内回复您。",
+      "name": "姓名 *",
+      "namePlaceholder": "您的姓名",
+      "email": "电子邮件 *",
+      "emailPlaceholder": "your@email.com",
       "phone": "电话号码",
+      "phonePlaceholder": "+1 (555) 123-4567",
       "company": "公司名称",
-      "message": "您的留言",
+      "message": "留言 *",
+      "messagePlaceholder": "告诉我们您的项目...",
       "submit": "发送消息",
-      "sending": "发送中..."
+      "sending": "发送中...",
+      "success": "谢谢您！我们已收到您的消息，将尽快回复您。",
+      "error": "抱歉，提交表单时出错。请重试。"
     },
     "info": {
+      "title": "联系信息",
+      "description": "通过这些渠道与我们联系。",
       "email": "电子邮件",
       "phone": "电话",
       "hours": "营业时间",
-      "hoursValue": "周一至周五：上午9:00 - 下午6:00"
+      "hoursValue": "周一至周五：上午9:00 - 下午6:00",
+      "findUs": "找到我们："
     }
   }
 }

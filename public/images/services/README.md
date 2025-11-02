@@ -1,6 +1,6 @@
 # Service Images
 
-Place your service images (1080x1080px JPG) here with the following filenames:
+Place your service images (1920x1080px JPG) here with the following filenames:
 
 - `meta-ads.jpg` - Meta Ads Solutions
 - `brand-development.jpg` - Brand Development  
@@ -11,7 +11,8 @@ Place your service images (1080x1080px JPG) here with the following filenames:
 
 **Image Specifications:**
 - Format: JPG
-- Size: 1080x1080 pixels (square)
+- Size: 1920x1080 pixels (16:9 aspect ratio)
 - Quality: High quality, optimized for web
+- Style: 3D rendered, modern, professional
 - Content: Relevant to each service type
 

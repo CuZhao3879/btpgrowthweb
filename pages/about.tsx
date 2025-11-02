@@ -1,31 +1,35 @@
 import { NextSeo } from 'next-seo'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Users, Target, Zap, Award } from 'lucide-react'
 import ClientLogos from '@/components/sections/ClientLogos'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function About() {
+  const { t } = useLanguage()
+  
   const values = [
     {
       icon: Target,
-      title: 'Results-Driven',
-      description: 'We focus on measurable outcomes that directly impact your bottom line.',
+      title: t('about.values.results'),
+      description: t('about.values.resultsDesc'),
     },
     {
       icon: Users,
-      title: 'Client-Centric',
-      description: 'Your success is our success. We build long-term partnerships.',
+      title: t('about.values.clientCentric'),
+      description: t('about.values.clientCentricDesc'),
     },
     {
       icon: Zap,
-      title: 'Innovation',
-      description: 'We stay ahead of trends to give you a competitive advantage.',
+      title: t('about.values.innovation'),
+      description: t('about.values.innovationDesc'),
     },
     {
       icon: Award,
-      title: 'Excellence',
-      description: 'We maintain the highest standards in everything we do.',
+      title: t('about.values.excellence'),
+      description: t('about.values.excellenceDesc'),
     },
   ]
 
@@ -38,20 +42,32 @@ export default function About() {
       />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 to-white py-20 pt-32 md:pt-36">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 pt-32 md:pt-36 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/about-services-blog-background.jpg"
+            alt="About Background"
+            fill
+            className="object-cover"
+            priority
+            quality={100}
+          />
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/50"></div>
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-6">
-              About BTP Growth Solutions
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">
+              {t('about.heroTitle')}
             </h1>
-            <p className="text-xl text-gray-600">
-              We&apos;re a team of forward-thinking growth strategists dedicated to empowering 
-              small and medium businesses through innovation, intelligence, and technology.
+            <p className="text-xl text-gray-200">
+              {t('about.heroDescription')}
             </p>
           </motion.div>
         </div>
@@ -68,17 +84,13 @@ export default function About() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-6">
-                Our Mission
+                {t('about.mission.title')}
               </h2>
               <p className="text-lg text-gray-600 mb-4">
-                At BTP Growth Solutions, we believe every business deserves the opportunity 
-                to thrive in the digital age. Our mission is to democratize access to 
-                world-class marketing expertise.
+                {t('about.mission.description')}
               </p>
               <p className="text-lg text-gray-600">
-                We combine data-driven strategies, creative excellence, and cutting-edge 
-                technology to deliver measurable results for our clients. Your growth is 
-                our passion.
+                {t('about.mission.description2')}
               </p>
             </motion.div>
             
@@ -89,12 +101,15 @@ export default function About() {
               transition={{ duration: 0.6 }}
               className="relative"
             >
-              {/* Placeholder for mission image */}
-              <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl shadow-xl flex items-center justify-center">
-                <div className="text-center text-white p-8">
-                  <p className="text-sm font-medium">Mission Image Placeholder</p>
-                  <p className="text-xs opacity-80 mt-2">Replace with team or office photo</p>
-                </div>
+              {/* Mission Image */}
+              <div className="relative aspect-video rounded-2xl shadow-xl overflow-hidden">
+                <Image
+                  src="/images/mission.jpg"
+                  alt="Our Mission"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
               </div>
             </motion.div>
           </div>
@@ -112,10 +127,10 @@ export default function About() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
-              Our Core Values
+              {t('about.values.title')}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              These principles guide everything we do and shape how we work with our clients.
+              {t('about.values.subtitle')}
             </p>
           </motion.div>
 
@@ -168,18 +183,17 @@ export default function About() {
             className="text-center max-w-3xl mx-auto"
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-6">
-              Ready to Grow Your Business?
+              {t('about.cta.title')}
             </h2>
             <p className="text-lg md:text-xl text-blue-100 mb-8">
-              Let&apos;s discuss how we can help you achieve your goals 
-              and take your business to the next level.
+              {t('about.cta.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/contact" className="px-8 py-3 bg-white text-primary-600 rounded-md font-semibold hover:bg-blue-50 transition-colors text-center">
-                Get in Touch
+                {t('about.cta.getInTouch')}
               </Link>
               <Link href="/services" className="px-8 py-3 bg-transparent text-white border-2 border-white rounded-md font-semibold hover:bg-white hover:text-primary-600 transition-colors text-center">
-                View Our Services
+                {t('about.cta.viewServices')}
               </Link>
             </div>
           </motion.div>
