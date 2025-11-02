@@ -133,27 +133,40 @@ const Navbar = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-white border-t"
+            className={cn(
+              "md:hidden border-t",
+              isHomePage && !isScrolled ? 'bg-black border-white/20' : 'bg-white border-gray-200'
+            )}
           >
             <div className="container mx-auto px-4 py-4 space-y-3">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    'block py-2 text-base font-medium transition-colors',
-                    isActive(link.href)
-                      ? 'text-primary-600'
-                      : 'text-gray-700 hover:text-primary-600'
-                  )}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Button asChild className="w-full mt-4">
-                <Link href="/contact">{t('nav.contact')}</Link>
-              </Button>
+              {navLinks.map((link) => {
+                const menuIsDark = isHomePage && !isScrolled
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      'block py-2 text-base font-medium transition-colors',
+                      menuIsDark
+                        ? 'text-white hover:text-blue-300'
+                        : (isActive(link.href)
+                            ? 'text-primary-600'
+                            : 'text-gray-700 hover:text-primary-600')
+                    )}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              })}
+              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button className={cn(
+                  "w-full mt-4",
+                  isHomePage && !isScrolled ? 'bg-blue-600 hover:bg-blue-700' : ''
+                )}>
+                  {t('nav.contact')}
+                </Button>
+              </Link>
             </div>
           </motion.div>
         )}

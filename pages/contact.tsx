@@ -20,6 +20,7 @@ export default function Contact() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState<string>('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -44,17 +45,28 @@ export default function Contact() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message')
+        const errorMsg = data.error || data.details || 'Failed to send message'
+        setErrorMessage(errorMsg)
+        throw new Error(errorMsg)
       }
 
       setSubmitStatus('success')
+      setErrorMessage('')
       setFormData({ name: '', email: '', phone: '', message: '' })
     } catch (error) {
       console.error('Form submission error:', error)
       setSubmitStatus('error')
+      if (error instanceof Error && error.message) {
+        setErrorMessage(error.message)
+      } else if (!errorMessage) {
+        setErrorMessage('Sorry, there was an error submitting your form. Please try again.')
+      }
     } finally {
       setIsSubmitting(false)
-      setTimeout(() => setSubmitStatus('idle'), 5000)
+      setTimeout(() => {
+        setSubmitStatus('idle')
+        setErrorMessage('')
+      }, 5000)
     }
   }
 
@@ -197,7 +209,10 @@ export default function Contact() {
 
                     {submitStatus === 'error' && (
                       <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
-                        {t('contact.form.error')}
+                        <p className="font-semibold mb-1">{t('contact.form.error')}</p>
+                        {errorMessage && (
+                          <p className="text-sm mt-2 opacity-90">{errorMessage}</p>
+                        )}
                       </div>
                     )}
 

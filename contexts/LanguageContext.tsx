@@ -18,32 +18,48 @@ export const useLanguage = () => {
   return context
 }
 
+// Pre-load default translations synchronously to prevent SSR flash
+import enTranslations from '@/locales/en.json'
+import zhTranslations from '@/locales/zh.json'
+
+const translationsMap: Record<Language, Record<string, any>> = {
+  en: enTranslations,
+  zh: zhTranslations,
+}
+
 interface LanguageProviderProps {
   children: ReactNode
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>('en')
-  const [translations, setTranslations] = useState<Record<string, any>>({})
+  const [translations, setTranslations] = useState<Record<string, any>>(translationsMap.en)
 
   useEffect(() => {
     // Load saved language preference
-    const savedLang = localStorage.getItem('language') as Language
-    if (savedLang && (savedLang === 'en' || savedLang === 'zh')) {
-      setLanguageState(savedLang)
+    if (typeof window !== 'undefined') {
+      const savedLang = localStorage.getItem('language') as Language
+      if (savedLang && (savedLang === 'en' || savedLang === 'zh')) {
+        setLanguageState(savedLang)
+        setTranslations(translationsMap[savedLang])
+      }
     }
   }, [])
 
   useEffect(() => {
-    // Load translations for the selected language
-    import(`@/locales/${language}.json`)
-      .then((module) => setTranslations(module.default))
-      .catch((err) => console.error('Failed to load translations:', err))
+    // Update translations when language changes
+    setTranslations(translationsMap[language])
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', language)
+    }
   }, [language])
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang)
-    localStorage.setItem('language', lang)
+    setTranslations(translationsMap[lang])
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', lang)
+    }
   }
 
   const t = (key: string): string => {

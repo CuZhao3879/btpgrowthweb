@@ -237,7 +237,7 @@ export default function BlogPage({ posts, currentPage, totalPages, totalPosts }:
                           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             post.slug === 'social-media-marketing-strategies' || post.slug === 'seo-best-practices-2025' || post.slug === 'malaysian-business-website-2025' || post.slug === 'branding-more-than-logo'
                               ? 'bg-primary-600 text-white shadow-lg' 
-                              : 'bg-white/90 backdrop-blur-sm text-primary-700'
+                              : 'bg-white text-primary-700 shadow-md'
                           }`}>
                             {post.category}
                           </span>

@@ -87,9 +87,16 @@ export default async function handler(
     })
   } catch (error) {
     console.error('API error:', error)
+    const errorDetails = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Error details:', {
+      message: errorDetails,
+      stack: error instanceof Error ? error.stack : undefined,
+      supabaseUrl: supabaseUrl ? 'configured' : 'missing',
+      supabaseKey: supabaseServiceKey ? 'configured' : 'missing',
+    })
     return res.status(500).json({ 
       error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: errorDetails
     })
   }
 }
