@@ -42,6 +42,14 @@ export default function Contact() {
         body: JSON.stringify(formData),
       })
 
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text()
+        console.error('API returned non-JSON response:', text.substring(0, 200))
+        throw new Error(`API endpoint returned invalid response. Status: ${response.status}. Please check if the API route is properly deployed.`)
+      }
+
       const data = await response.json()
 
       if (!response.ok) {
