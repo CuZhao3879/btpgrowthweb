@@ -1,16 +1,28 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { createClient } from '@supabase/supabase-js'
-import { google } from 'googleapis'
 
-// Server-side Supabase client (uses service role key for admin operations)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+// Lazy load dependencies to avoid import errors
+let supabaseAdmin: any = null
+let google: any = null
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('Missing Supabase environment variables')
+// Initialize Supabase client only if env vars are available
+function getSupabaseClient() {
+  if (supabaseAdmin) return supabaseAdmin
+  
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
+  }
+  
+  try {
+    const { createClient } = require('@supabase/supabase-js')
+    supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+    return supabaseAdmin
+  } catch (error) {
+    throw new Error(`Failed to initialize Supabase client: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  }
 }
-
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
 interface ContactFormData {
   name: string
@@ -38,6 +50,7 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
+  // Wrap entire handler in try-catch to ensure JSON responses
   try {
     const { name, email, phone, message }: ContactFormData = req.body
 
@@ -54,8 +67,20 @@ export default async function handler(
       return res.status(400).json({ error: 'Invalid email format' })
     }
 
+    // Initialize Supabase client (will throw if env vars missing)
+    let supabaseClient
+    try {
+      supabaseClient = getSupabaseClient()
+    } catch (initError) {
+      console.error('Supabase initialization error:', initError)
+      return res.status(500).json({ 
+        error: 'Server configuration error',
+        details: initError instanceof Error ? initError.message : 'Failed to initialize database connection'
+      })
+    }
+
     // Insert into Supabase
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabaseClient
       .from('contact_messages')
       .insert([
         {
@@ -98,15 +123,29 @@ export default async function handler(
   } catch (error) {
     console.error('API error:', error)
     const errorDetails = error instanceof Error ? error.message : 'Unknown error'
+    const errorStack = error instanceof Error ? error.stack : undefined
+    
+    // Check environment variables for debugging
+    const envCheck = {
+      hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      hasGmailClientId: !!process.env.GMAIL_CLIENT_ID,
+      hasGmailClientSecret: !!process.env.GMAIL_CLIENT_SECRET,
+      hasGmailRefreshToken: !!process.env.GMAIL_REFRESH_TOKEN,
+    }
+    
     console.error('Error details:', {
       message: errorDetails,
-      stack: error instanceof Error ? error.stack : undefined,
-      supabaseUrl: supabaseUrl ? 'configured' : 'missing',
-      supabaseKey: supabaseServiceKey ? 'configured' : 'missing',
+      stack: errorStack,
+      envCheck,
     })
+    
+    // Always return JSON, never HTML
     return res.status(500).json({ 
       error: 'Internal server error',
-      details: errorDetails
+      details: errorDetails,
+      // Only include stack in development
+      ...(process.env.NODE_ENV === 'development' && errorStack ? { stack: errorStack } : {})
     })
   }
 }
@@ -128,6 +167,16 @@ async function sendEmailViaGmailAPI({
   if (!gmailClientId || !gmailClientSecret || !gmailRefreshToken) {
     console.warn('Gmail OAuth2 not configured, skipping email notification')
     return null
+  }
+
+  // Lazy load googleapis
+  if (!google) {
+    try {
+      google = require('googleapis').google
+    } catch (error) {
+      console.error('Failed to load googleapis:', error)
+      throw new Error('Gmail API library not available')
+    }
   }
 
   // Create OAuth2 client
