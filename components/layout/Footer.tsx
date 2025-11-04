@@ -33,7 +33,7 @@ const Footer = () => {
   const socialLinks = [
     { 
       image: '/images/services/instagram.png',
-      href: process.env.NEXT_PUBLIC_INSTAGRAM_URL || '#', 
+      href: 'https://www.instagram.com/btpgrowth.my', 
       label: 'Instagram',
     },
     { 
