@@ -113,14 +113,14 @@ export default function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) 
                 <Calendar className="h-5 w-5" />
                 <span>
                   {language === 'zh' 
-                    ? `${t('blog.publishedOn')} ${new Date(post.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}`
-                    : `${t('blog.publishedOn')} ${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`
+                    ? new Date(post.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
+                    : new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
                   }
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
-                <span>{post.readingTime} {t('blog.readTime')}</span>
+                <span>{post.readingTime}</span>
               </div>
             </div>
           </motion.div>
