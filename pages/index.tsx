@@ -16,15 +16,15 @@ export default function Home() {
           type: 'website',
           locale: 'en_US',
           url: siteUrl,
-          siteName: 'BTP Growth',
-          title: 'BTP Growth | AI-Powered Business Growth Agency',
+          siteName: 'BTP Growth Solutions',
+          title: 'BTP Growth Solutions | AI-Powered Business Growth Agency',
           description: 'Your trusted partner leveraging AI and marketing innovation to accelerate growth, streamline operations, and create smarter customer experiences — empowering your business to thrive in the digital era.',
           images: [
             {
               url: `${siteUrl}/images/og-image.jpg`,
               width: 1200,
               height: 630,
-              alt: 'BTP Growth | AI-Powered Business Growth Agency',
+              alt: 'BTP Growth Solutions | AI-Powered Business Growth Agency',
             },
           ],
         }}
