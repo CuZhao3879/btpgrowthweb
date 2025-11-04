@@ -5,11 +5,33 @@ import ClientLogos from '@/components/sections/ClientLogos'
 import CTA from '@/components/sections/CTA'
 
 export default function Home() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://btpgrowth.com'
+  
   return (
     <>
       <NextSeo
-        title="Home | BTP Growth Solutions"
-        description="Accelerate your business growth with innovative digital marketing strategies. We help SMBs achieve remarkable results through data-driven solutions."
+        title="BTP Growth | AI-Powered Business Growth Agency"
+        description="Your trusted partner leveraging AI and marketing innovation to accelerate growth, streamline operations, and create smarter customer experiences — empowering your business to thrive in the digital era."
+        openGraph={{
+          type: 'website',
+          locale: 'en_US',
+          url: siteUrl,
+          siteName: 'BTP Growth',
+          title: 'BTP Growth | AI-Powered Business Growth Agency',
+          description: 'Your trusted partner leveraging AI and marketing innovation to accelerate growth, streamline operations, and create smarter customer experiences — empowering your business to thrive in the digital era.',
+          images: [
+            {
+              url: `${siteUrl}/images/og-image.jpg`,
+              width: 1200,
+              height: 630,
+              alt: 'BTP Growth | AI-Powered Business Growth Agency',
+            },
+          ],
+        }}
+        twitter={{
+          handle: '@btpgrowth',
+          cardType: 'summary_large_image',
+        }}
       />
       
       <Hero />
