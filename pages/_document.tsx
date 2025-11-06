@@ -20,22 +20,6 @@ export default function Document() {
         
         {/* Meta tags */}
         <meta name="theme-color" content="#3b82f6" />
-
-        {/* Google tag (gtag.js) */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-7VG3ZLH74Q"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-7VG3ZLH74Q');
-            `,
-          }}
-        />
       </Head>
       <body>
         <Main />

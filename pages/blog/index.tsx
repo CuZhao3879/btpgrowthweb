@@ -222,10 +222,16 @@ export default function BlogPage({ posts, currentPage, totalPages, totalPosts }:
                       {/* Featured Image */}
                       <div className="relative h-48 bg-gradient-to-br from-primary-400 to-primary-600 overflow-hidden">
                         {post.image ? (
-                          <div
-                            className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-300"
-                            style={{ backgroundImage: `url(${post.image})` }}
-                          />
+                          <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-300">
+                            <Image
+                              src={post.image}
+                              alt={post.title}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              quality={85}
+                            />
+                          </div>
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center text-white">
                             <span className="text-sm">Blog Post Image</span>

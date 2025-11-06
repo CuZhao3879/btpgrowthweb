@@ -138,9 +138,14 @@ export default function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) 
               className="max-w-4xl mx-auto"
             >
               <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl">
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${post.image})` }}
+                <Image
+                  src={post.image}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                  priority
+                  quality={90}
                 />
               </div>
             </motion.div>
@@ -185,15 +190,40 @@ export default function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) 
             >
               <ReactMarkdown
                 components={{
-                  // Render images normally but styled to break out of paragraph flow
+                  // Render images using Next.js Image component for optimization
                   img: ({ node, ...props }: any) => {
+                    const src = props.src || ''
+                    const alt = props.alt || 'Article image'
+                    
+                    // Check if it's an external URL
+                    const isExternal = src.startsWith('http://') || src.startsWith('https://')
+                    
+                    // For external images, use regular img tag (can add remotePatterns in next.config.js if needed)
+                    if (isExternal) {
+                      return (
+                        <img 
+                          src={src}
+                          alt={alt}
+                          className="rounded-xl shadow-xl w-full h-auto border border-gray-200 my-8 block"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      )
+                    }
+                    
+                    // For local images, use Next.js Image component with fill
                     return (
-                      <img 
-                        {...props} 
-                        className="rounded-xl shadow-xl w-full h-auto border border-gray-200 my-8 block"
-                        alt={props.alt || 'Article image'}
-                        loading="lazy"
-                      />
+                      <div className="relative w-full my-8" style={{ minHeight: '200px', aspectRatio: '16/9' }}>
+                        <Image
+                          src={src}
+                          alt={alt}
+                          fill
+                          className="rounded-xl shadow-xl border border-gray-200 object-contain"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                          loading="lazy"
+                          quality={85}
+                        />
+                      </div>
                     )
                   },
                   // Convert paragraphs that start with "Why This Matters" to divs
@@ -327,9 +357,13 @@ export default function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) 
                     <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
                       <div className="relative h-40 bg-gradient-to-br from-primary-400 to-primary-600 overflow-hidden">
                         {relatedPost.image ? (
-                          <div
-                            className="absolute inset-0 bg-cover bg-center"
-                            style={{ backgroundImage: `url(${relatedPost.image})` }}
+                          <Image
+                            src={relatedPost.image}
+                            alt={relatedPost.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
+                            quality={85}
                           />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center text-white">
