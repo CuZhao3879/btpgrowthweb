@@ -195,23 +195,7 @@ export default function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) 
                     const src = props.src || ''
                     const alt = props.alt || 'Article image'
                     
-                    // Check if it's an external URL
-                    const isExternal = src.startsWith('http://') || src.startsWith('https://')
-                    
-                    // For external images, use regular img tag (can add remotePatterns in next.config.js if needed)
-                    if (isExternal) {
-                      return (
-                        <img 
-                          src={src}
-                          alt={alt}
-                          className="rounded-xl shadow-xl w-full h-auto border border-gray-200 my-8 block"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      )
-                    }
-                    
-                    // For local images, use Next.js Image component with fill
+                    // Use Next.js Image component for all images (local images)
                     return (
                       <div className="relative w-full my-8" style={{ minHeight: '200px', aspectRatio: '16/9' }}>
                         <Image
