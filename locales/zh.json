@@ -4,7 +4,8 @@
     "about": "关于我们",
     "services": "服务",
     "blog": "博客",
-    "contact": "联系我们"
+    "contact": "联系我们",
+    "affiliate": "联盟分销"
   },
   "hero": {
     "badge": "您的增长伙伴",
@@ -198,6 +199,59 @@
       "hours": "营业时间",
       "hoursValue": "周一至周五：上午9:00 - 下午6:00",
       "findUs": "找到我们："
+    }
+  },
+  "affiliate": {
+    "login": {
+      "title": "联盟推广计划",
+      "subtitle": "登录以查看您的佣金并管理提现。",
+      "selectApp": "选择应用",
+      "userId": "您的用户 ID",
+      "userIdHint": "您可以在 Monvo AI 应用内找到它 → 设置 → 个人资料卡",
+      "userIdPlaceholder": "例如 user_2Qx...",
+      "button": "进入控制台",
+      "authenticating": "正在验证...",
+      "errorEmpty": "请输入来自应用的用户 ID",
+      "errorNotFound": "未找到推广账号。请先在 Monvo AI 应用内注册。",
+      "errorNetwork": "网络连接错误。请检查您的连接。"
+    },
+    "dashboard": {
+      "title": "联盟推广计划",
+      "tabs": {
+        "overview": "总览",
+        "commissions": "佣金明细",
+        "team": "我的团队",
+        "payouts": "提现管理"
+      },
+      "stats": {
+        "monthlyEarnings": "本月预估收益",
+        "availableBalance": "可提现余额",
+        "pendingClear": "待结算",
+        "paidReferrals": "有效付费推荐"
+      },
+      "tier": {
+        "title": "当前推广等级",
+        "direct": "直接推荐佣金",
+        "indirect": "团队推荐佣金",
+        "progressTo": "距下一级还需",
+        "inviteMore": "再邀请",
+        "remaining": "个付费用户即可升级您的分成",
+        "maxReached": "已达最高等级！",
+        "maxDesc": "您正在享受最高分成比例。"
+      },
+      "referral": {
+        "title": "专属推荐码",
+        "subtitle": "分享给朋友或粉丝，获得属于您的收益。",
+        "copyButton": "复制推荐码"
+      },
+      "tierStructure": {
+        "title": "分销等级制度",
+        "level": "LVL",
+        "direct": "直推",
+        "indirect": "团队",
+        "require": "权益门槛:",
+        "users": "个有效用户的积累"
+      }
     }
   }
 }

@@ -41,6 +41,7 @@ const Navbar = () => {
     { href: '/about', label: t('nav.about') },
     { href: '/services', label: t('nav.services') },
     { href: '/blog', label: t('nav.blog') },
+    { href: '/affiliate/dashboard', label: t('nav.affiliate') },
   ]
 
   const isActive = (path: string) => router.pathname === path

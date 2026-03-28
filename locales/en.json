@@ -4,7 +4,8 @@
     "about": "About Us",
     "services": "Services",
     "blog": "Blog",
-    "contact": "Contact Us"
+    "contact": "Contact Us",
+    "affiliate": "Affiliate"
   },
   "hero": {
     "badge": "Your Growth Partner",
@@ -195,6 +196,59 @@
       "hours": "Business Hours",
       "hoursValue": "Mon-Fri: 9:00 AM - 6:00 PM",
       "findUs": "Find us:"
+    }
+  },
+  "affiliate": {
+    "login": {
+      "title": "Affiliate Program",
+      "subtitle": "Log in to view your commissions and manage payouts.",
+      "selectApp": "Select App",
+      "userId": "Your User ID",
+      "userIdHint": "Find this in Monvo AI app → Settings → Profile Card",
+      "userIdPlaceholder": "e.g. user_2Qx...",
+      "button": "Access Dashboard",
+      "authenticating": "Authenticating...",
+      "errorEmpty": "Please enter your User ID from the app",
+      "errorNotFound": "Affiliate account not found. Please register from the Monvo AI app first.",
+      "errorNetwork": "Network error. Please check your connection."
+    },
+    "dashboard": {
+      "title": "Affiliate Program",
+      "tabs": {
+        "overview": "Overview",
+        "commissions": "Commissions",
+        "team": "Team",
+        "payouts": "Payouts"
+      },
+      "stats": {
+        "monthlyEarnings": "Monthly Earnings",
+        "availableBalance": "Available Balance",
+        "pendingClear": "Pending Clear",
+        "paidReferrals": "Paid Referrals"
+      },
+      "tier": {
+        "title": "Commission Tier",
+        "direct": "Direct Commission",
+        "indirect": "Indirect (Sub-affiliate)",
+        "progressTo": "Progress to",
+        "inviteMore": "Invite",
+        "remaining": "more paying users to upgrade your tier.",
+        "maxReached": "Maximum Tier Reached!",
+        "maxDesc": "You are earning the highest possible rates."
+      },
+      "referral": {
+        "title": "Your Referral Code",
+        "subtitle": "Share this code with your audience to track your referrals.",
+        "copyButton": "Copy Referral Code"
+      },
+      "tierStructure": {
+        "title": "Affiliate Tier Structure",
+        "level": "LVL",
+        "direct": "Direct",
+        "indirect": "Sub-affiliate",
+        "require": "Requires",
+        "users": "Users"
+      }
     }
   }
 }
