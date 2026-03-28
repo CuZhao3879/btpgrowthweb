@@ -14,19 +14,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { source_app, source_user_id } = req.body
+    const { source_app, source_user_id, login_id } = req.body
 
-    if (!source_app || !source_user_id) {
-      return res.status(400).json({ error: 'source_app and source_user_id are required' })
+    if (!source_app || (!source_user_id && !login_id)) {
+      return res.status(400).json({ error: 'source_app and either source_user_id or login_id are required' })
     }
 
-    // Get affiliate profile
-    const { data: affiliate, error } = await supabaseAdmin
-      .from('affiliates')
-      .select('*')
-      .eq('source_app', source_app)
-      .eq('source_user_id', source_user_id)
-      .single()
+    // Get affiliate profile (allow login by either source_user_id directly from app, or login_id from web dashboard)
+    let query = supabaseAdmin.from('affiliates').select('*').eq('source_app', source_app)
+    
+    if (login_id) {
+      query = query.eq('btp_login_id', login_id.trim())
+    } else {
+      query = query.eq('source_user_id', source_user_id)
+    }
+
+    const { data: affiliate, error } = await query.single()
 
     if (error || !affiliate) {
       return res.status(404).json({ error: 'Affiliate not found' })
@@ -86,6 +89,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({
       affiliate: {
         id: affiliate.id,
+        btp_login_id: affiliate.btp_login_id,
         referral_code: affiliate.referral_code,
         tier: affiliate.tier,
         display_name: affiliate.display_name,

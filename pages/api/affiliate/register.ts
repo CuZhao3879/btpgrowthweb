@@ -17,6 +17,11 @@ function generateReferralCode(): string {
   return code
 }
 
+// Generate an 8-character numeric ID (e.g. 83901234)
+function generateLoginId(): string {
+  return Math.floor(10000000 + Math.random() * 90000000).toString()
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -55,18 +60,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    // Generate unique referral code
+    // Generate unique referral code and login ID
     let referral_code = generateReferralCode()
+    let btp_login_id = generateLoginId()
     let attempts = 0
     while (attempts < 10) {
-      const { data: codeCheck } = await supabaseAdmin
+      // Check both code and login ID for uniqueness
+      const { data: check } = await supabaseAdmin
         .from('affiliates')
         .select('id')
-        .eq('referral_code', referral_code)
+        .or(`referral_code.eq.${referral_code},btp_login_id.eq.${btp_login_id}`)
         .single()
 
-      if (!codeCheck) break
+      if (!check) break
       referral_code = generateReferralCode()
+      btp_login_id = generateLoginId()
       attempts++
     }
 
@@ -78,6 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         source_user_id,
         email,
         display_name,
+        btp_login_id,
         referral_code,
         parent_id,
         tier: 'starter',

@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS affiliates (
   source_user_id       TEXT NOT NULL,
   email                TEXT,
   display_name         TEXT,
+  btp_login_id         TEXT UNIQUE,
   referral_code        TEXT UNIQUE NOT NULL,
   tier                 TEXT DEFAULT 'starter'
                        CHECK (tier IN ('starter','pro','elite','partner')),
@@ -175,3 +176,39 @@ BEGIN
   RETURN v_new_tier;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =============================================================
+-- Migration: Add BTP Login ID to existing affiliates
+-- (Run this if you already have existing affiliates in your DB)
+-- =============================================================
+DO $$
+DECLARE
+  rec RECORD;
+  new_login_id TEXT;
+BEGIN
+  -- 1. Add column if it doesn't exist
+  IF NOT EXISTS (
+    SELECT FROM information_schema.columns 
+    WHERE table_name = 'affiliates' AND column_name = 'btp_login_id'
+  ) THEN
+    ALTER TABLE affiliates ADD COLUMN btp_login_id TEXT UNIQUE;
+  END IF;
+
+  -- 2. Backfill existing rows that have NULL btp_login_id
+  FOR rec IN SELECT id FROM affiliates WHERE btp_login_id IS NULL LOOP
+    LOOP
+      -- Generate an 8-digit numeric ID
+      new_login_id := floor(random() * 90000000 + 10000000)::text;
+      
+      -- Ensure uniqueness
+      IF NOT EXISTS (SELECT 1 FROM affiliates WHERE btp_login_id = new_login_id) THEN
+        UPDATE affiliates SET btp_login_id = new_login_id WHERE id = rec.id;
+        EXIT;
+      END IF;
+    END LOOP;
+  END LOOP;
+  
+  -- 3. Make the column NOT NULL after backfilling
+  ALTER TABLE affiliates ALTER COLUMN btp_login_id SET NOT NULL;
+END;
+$$;

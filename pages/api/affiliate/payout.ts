@@ -13,19 +13,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { source_app, source_user_id, payout_email } = req.body
+    const { source_app, source_user_id, login_id, payout_email } = req.body
 
-    if (!source_app || !source_user_id || !payout_email) {
-      return res.status(400).json({ error: 'source_app, source_user_id, and payout_email are required' })
+    if (!source_app || (!source_user_id && !login_id) || !payout_email) {
+      return res.status(400).json({ error: 'source_app, login_id (or source_user_id), and payout_email are required' })
     }
 
-    // Get affiliate
-    const { data: affiliate, error: affError } = await supabaseAdmin
-      .from('affiliates')
-      .select('*')
-      .eq('source_app', source_app)
-      .eq('source_user_id', source_user_id)
-      .single()
+    // Get affiliate profile
+    let query = supabaseAdmin.from('affiliates').select('*').eq('source_app', source_app)
+    
+    if (login_id) {
+      query = query.eq('btp_login_id', login_id.trim())
+    } else {
+      query = query.eq('source_user_id', source_user_id)
+    }
+
+    const { data: affiliate, error: affError } = await query.single()
 
     if (affError || !affiliate) {
       return res.status(404).json({ error: 'Affiliate not found' })

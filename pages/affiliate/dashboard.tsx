@@ -93,7 +93,7 @@ export default function AffiliateDashboardPage() {
       const res = await fetch('/api/affiliate/dashboard', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source_app: loginApp, source_user_id: loginUserId.trim() }),
+        body: JSON.stringify({ source_app: loginApp, login_id: loginUserId.trim() }),
       })
       if (res.ok) {
         const dashData = await res.json()
@@ -124,7 +124,7 @@ export default function AffiliateDashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           source_app: loginApp,
-          source_user_id: loginUserId,
+          login_id: loginUserId.trim(),
           payout_email: payoutEmail.trim(),
         }),
       })
