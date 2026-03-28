@@ -204,16 +204,41 @@
   "affiliate": {
     "login": {
       "title": "联盟推广计划",
-      "subtitle": "登录以查看您的佣金并管理提现。",
-      "selectApp": "选择应用",
-      "userId": "您的 BTP 登录 ID",
-      "userIdHint": "您可以在 Monvo AI 应用内找到它 → 设置 → 推广联盟",
-      "userIdPlaceholder": "例如 83901234",
+      "subtitle": "使用您的 BTP 用户名和密码登录。",
+      "username": "用户名",
+      "usernamePlaceholder": "例如 zhangsan",
+      "password": "密码",
+      "forgotPassword": "忘记密码？",
       "button": "进入控制台",
       "authenticating": "正在验证...",
-      "errorEmpty": "请输入您的 BTP 登录 ID",
+      "errorEmptyUsername": "请输入您的用户名",
+      "errorEmptyPassword": "请输入您的密码",
       "errorNotFound": "未找到推广账号。请先在 Monvo AI 应用内注册。",
+      "errorWrongPassword": "密码错误，请重试。",
+      "errorPasswordNotSet": "您的账号尚未设置密码。请使用「忘记密码」功能设置。",
       "errorNetwork": "网络连接错误。请检查您的连接。"
+    },
+    "forgot": {
+      "title": "忘记密码",
+      "subtitle": "输入您注册时使用的邮箱地址，我们将发送验证码。",
+      "emailLabel": "邮箱地址",
+      "sendCode": "发送验证码",
+      "sending": "发送中...",
+      "otpSent": "验证码已发送至您的邮箱。",
+      "errorInvalidEmail": "请输入有效的邮箱地址。",
+      "backToLogin": "返回登录"
+    },
+    "reset": {
+      "title": "重置密码",
+      "subtitle": "输入邮箱中收到的 6 位验证码和新密码。",
+      "otpLabel": "验证码",
+      "newPasswordLabel": "新密码",
+      "passwordHint": "至少 6 个字符",
+      "button": "重置密码",
+      "resetting": "重置中...",
+      "success": "密码重置成功！您现在可以登录了。",
+      "errorEmptyOtp": "请输入验证码。",
+      "errorWeakPassword": "密码至少需要 6 个字符。"
     },
     "dashboard": {
       "title": "联盟推广计划",

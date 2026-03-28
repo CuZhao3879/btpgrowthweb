@@ -1,11 +1,13 @@
 /**
- * API: Request a payout
+ * API: Request a payout (V2 — with username+password auth)
  * POST /api/affiliate/payout
- * 
- * Body: { source_app, source_user_id, payout_email }
+ *
+ * Body: { username, password, payout_email }
+ *   OR  { source_app, source_user_id, payout_email }
  */
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import bcrypt from 'bcryptjs'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -13,24 +15,66 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { source_app, source_user_id, login_id, payout_email } = req.body
+    const { source_app, source_user_id, username, password, payout_email } = req.body
 
-    if (!source_app || (!source_user_id && !login_id) || !payout_email) {
-      return res.status(400).json({ error: 'source_app, login_id (or source_user_id), and payout_email are required' })
+    if (!payout_email) {
+      return res.status(400).json({ error: 'payout_email is required' })
     }
 
-    // Get affiliate profile
-    let query = supabaseAdmin.from('affiliates').select('*').eq('source_app', source_app)
-    
-    if (login_id) {
-      query = query.eq('btp_login_id', login_id.trim())
+    let affiliate: any = null
+
+    // Auth path 1: username + password (from web)
+    if (username && password) {
+      const { data: found } = await supabaseAdmin
+        .from('affiliates')
+        .select('*')
+        .eq('username', username.trim().toLowerCase())
+        .single()
+
+      if (!found || !found.password_hash) {
+        return res.status(404).json({ error: 'Affiliate not found' })
+      }
+
+      const isValid = await bcrypt.compare(password, found.password_hash)
+      if (!isValid) {
+        return res.status(401).json({ error: 'Invalid credentials' })
+      }
+      affiliate = found
+    }
+    // Auth path 2: source_app + source_user_id (from app)
+    else if (source_app && source_user_id) {
+      // Try connections table first
+      const { data: conn } = await supabaseAdmin
+        .from('affiliate_connections')
+        .select('affiliate_id')
+        .eq('source_app', source_app)
+        .eq('source_user_id', source_user_id)
+        .single()
+
+      if (conn) {
+        const { data: found } = await supabaseAdmin
+          .from('affiliates')
+          .select('*')
+          .eq('id', conn.affiliate_id)
+          .single()
+        affiliate = found
+      }
+
+      // Fallback legacy
+      if (!affiliate) {
+        const { data: found } = await supabaseAdmin
+          .from('affiliates')
+          .select('*')
+          .eq('source_app', source_app)
+          .eq('source_user_id', source_user_id)
+          .single()
+        affiliate = found
+      }
     } else {
-      query = query.eq('source_user_id', source_user_id)
+      return res.status(400).json({ error: 'Authentication required' })
     }
 
-    const { data: affiliate, error: affError } = await query.single()
-
-    if (affError || !affiliate) {
+    if (!affiliate) {
       return res.status(404).json({ error: 'Affiliate not found' })
     }
 
@@ -38,8 +82,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Check minimum payout threshold ($15)
     if (availableBalance < 15) {
-      return res.status(400).json({ 
-        error: `Minimum payout is $15.00. Your available balance is $${availableBalance.toFixed(2)}.` 
+      return res.status(400).json({
+        error: `Minimum payout is $15.00. Your available balance is $${availableBalance.toFixed(2)}.`
       })
     }
 
@@ -52,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .single()
 
     if (pendingPayout) {
-      return res.status(400).json({ error: 'You already have a pending payout request. Please wait for it to be processed.' })
+      return res.status(400).json({ error: 'You already have a pending payout request.' })
     }
 
     // Create payout request
@@ -73,10 +117,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: 'Failed to create payout request' })
     }
 
-    // Update affiliate: save payout email and zero out cleared balance
+    // Update affiliate balance and save payout email
     await supabaseAdmin
       .from('affiliates')
-      .update({ 
+      .update({
         payout_email,
         balance_cleared: 0,
         updated_at: new Date().toISOString(),

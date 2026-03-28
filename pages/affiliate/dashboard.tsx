@@ -71,20 +71,36 @@ const TIER_CONFIG: Record<string, { label: string; icon: string; color: string; 
 
 export default function AffiliateDashboardPage() {
   const { t } = useLanguage()
-  const [step, setStep] = useState<'login' | 'dashboard'>('login')
+  const [step, setStep] = useState<'login' | 'forgot' | 'reset' | 'dashboard'>('login')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
   const [data, setData] = useState<DashboardData | null>(null)
-  const [loginApp, setLoginApp] = useState('monvo_ai')
-  const [loginUserId, setLoginUserId] = useState('')
+
+  // Login state
+  const [loginUsername, setLoginUsername] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+
+  // Forgot/Reset password state
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetOtp, setResetOtp] = useState('')
+  const [resetNewPassword, setResetNewPassword] = useState('')
+  const [otpSent, setOtpSent] = useState(false)
+
+  // Payout state
   const [payoutEmail, setPayoutEmail] = useState('')
   const [payoutLoading, setPayoutLoading] = useState(false)
   const [payoutMessage, setPayoutMessage] = useState('')
   const [activeTab, setActiveTab] = useState<'overview' | 'commissions' | 'team' | 'payouts'>('overview')
 
   const handleLogin = async () => {
-    if (!loginUserId.trim()) {
-      setError(t('affiliate.login.errorEmpty'))
+    if (!loginUsername.trim()) {
+      setError(t('affiliate.login.errorEmptyUsername'))
+      return
+    }
+    if (!loginPassword) {
+      setError(t('affiliate.login.errorEmptyPassword'))
       return
     }
     setLoading(true)
@@ -93,16 +109,87 @@ export default function AffiliateDashboardPage() {
       const res = await fetch('/api/affiliate/dashboard', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source_app: loginApp, login_id: loginUserId.trim() }),
+        body: JSON.stringify({ username: loginUsername.trim(), password: loginPassword }),
+      })
+      const result = await res.json()
+      if (res.ok) {
+        setData(result)
+        setStep('dashboard')
+      } else if (result.code === 'NOT_FOUND') {
+        setError(t('affiliate.login.errorNotFound'))
+      } else if (result.code === 'WRONG_PASSWORD') {
+        setError(t('affiliate.login.errorWrongPassword'))
+      } else if (result.code === 'PASSWORD_NOT_SET') {
+        setError(t('affiliate.login.errorPasswordNotSet'))
+      } else {
+        setError(result.error || 'Something went wrong.')
+      }
+    } catch {
+      setError(t('affiliate.login.errorNetwork'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    if (!resetEmail.trim() || !resetEmail.includes('@')) {
+      setError(t('affiliate.forgot.errorInvalidEmail'))
+      return
+    }
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/affiliate/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: resetEmail.trim() }),
       })
       if (res.ok) {
-        const dashData = await res.json()
-        setData(dashData)
-        setStep('dashboard')
-      } else if (res.status === 404) {
-        setError(t('affiliate.login.errorNotFound'))
+        setOtpSent(true)
+        setStep('reset')
+        setSuccessMsg(t('affiliate.forgot.otpSent'))
+      }
+    } catch {
+      setError(t('affiliate.login.errorNetwork'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleResetPassword = async () => {
+    if (!resetOtp.trim()) {
+      setError(t('affiliate.reset.errorEmptyOtp'))
+      return
+    }
+    if (resetNewPassword.length < 6) {
+      setError(t('affiliate.reset.errorWeakPassword'))
+      return
+    }
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/affiliate/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: resetEmail.trim(),
+          otp: resetOtp.trim(),
+          new_password: resetNewPassword,
+        }),
+      })
+      const result = await res.json()
+      if (res.ok) {
+        setLoginUsername(result.username || '')
+        setLoginPassword('')
+        setStep('login')
+        setSuccessMsg(t('affiliate.reset.success'))
+        // Clear reset state
+        setResetEmail('')
+        setResetOtp('')
+        setResetNewPassword('')
+        setOtpSent(false)
       } else {
-        setError('Something went wrong. Please try again.')
+        setError(result.error || 'Invalid code')
       }
     } catch {
       setError(t('affiliate.login.errorNetwork'))
@@ -123,14 +210,15 @@ export default function AffiliateDashboardPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          source_app: loginApp,
-          login_id: loginUserId.trim(),
+          username: loginUsername.trim(),
+          password: loginPassword,
           payout_email: payoutEmail.trim(),
         }),
       })
       const result = await res.json()
       if (res.ok) {
         setPayoutMessage(`✅ Payout of $${result.payout.amount.toFixed(2)} requested successfully!`)
+        // Refresh data
         handleLogin()
       } else {
         setPayoutMessage(`❌ ${result.error}`)
@@ -150,14 +238,12 @@ export default function AffiliateDashboardPage() {
       <>
         <Head>
           <title>Affiliate Login | BTP Growth</title>
-          <meta name="description" content="View your affiliate earnings, referrals, and manage payouts on BTP Growth" />
+          <meta name="description" content="Log in to your affiliate dashboard on BTP Growth" />
         </Head>
         <div className="min-h-screen bg-slate-50 relative flex items-center justify-center p-4 overflow-hidden">
-          {/* Decorative Background Elements */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/20 blur-[120px]" />
             <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] rounded-full bg-indigo-400/20 blur-[120px]" />
-            <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-purple-400/10 blur-[100px]" />
           </div>
 
           <motion.div
@@ -169,55 +255,73 @@ export default function AffiliateDashboardPage() {
             <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40">
               <div className="flex flex-col items-center mb-8">
                 <div className="w-16 h-16 flex items-center justify-center overflow-hidden mb-5">
-                  <Image
-                    src="/images/logo.png"
-                    alt="BTP Growth Logo"
-                    width={64}
-                    height={64}
-                    className="w-full h-full object-contain"
-                  />
+                  <Image src="/images/logo.png" alt="BTP Growth Logo" width={64} height={64} className="w-full h-full object-contain" />
                 </div>
                 <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t('affiliate.login.title')}</h1>
                 <p className="text-slate-500 text-sm mt-2 text-center">{t('affiliate.login.subtitle')}</p>
               </div>
-              
+
               <div className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5 ml-1">{t('affiliate.login.selectApp')}</label>
-                  <div className="relative">
-                    <select
-                      value={loginApp}
-                      onChange={(e) => setLoginApp(e.target.value)}
-                      className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none cursor-pointer font-medium"
-                    >
-                      <option value="monvo_ai">Monvo AI</option>
-                    </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
-                  </div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5 ml-1">{t('affiliate.login.username')}</label>
+                  <input
+                    type="text"
+                    value={loginUsername}
+                    onChange={(e) => setLoginUsername(e.target.value)}
+                    placeholder={t('affiliate.login.usernamePlaceholder')}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                    onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5 ml-1">{t('affiliate.login.userId')}</label>
-                  <input
-                    type="text"
-                    value={loginUserId}
-                    onChange={(e) => setLoginUserId(e.target.value)}
-                    placeholder={t('affiliate.login.userIdPlaceholder')}
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
-                  />
-                  <p className="text-[13px] text-slate-500 mt-2 ml-1">
-                    {t('affiliate.login.userIdHint')}
-                  </p>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5 ml-1">{t('affiliate.login.password')}</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3.5 pr-12 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                      onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {showPassword ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                        ) : (
+                          <>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </>
+                        )}
+                      </svg>
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => { setStep('forgot'); setError(''); setSuccessMsg('') }}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 ml-1 transition-colors"
+                  >
+                    {t('affiliate.login.forgotPassword')}
+                  </button>
                 </div>
 
                 <AnimatePresence>
+                  {successMsg && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+                      className="bg-emerald-50 text-emerald-700 text-sm px-4 py-3 rounded-xl border border-emerald-100 flex items-start gap-2"
+                    >
+                      <span>✅</span><p>{successMsg}</p>
+                    </motion.div>
+                  )}
                   {error && (
-                    <motion.div 
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
                       className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl border border-red-100 flex items-start gap-2"
                     >
                       <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -229,12 +333,12 @@ export default function AffiliateDashboardPage() {
                 <button
                   onClick={handleLogin}
                   disabled={loading}
-                  className="w-full relative group overflow-hidden bg-blue-600 text-white font-semibold py-4 rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30 hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-md mt-6"
+                  className="w-full relative group overflow-hidden bg-blue-600 text-white font-semibold py-4 rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30 hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 mt-2"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     {loading ? (
                       <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -247,6 +351,119 @@ export default function AffiliateDashboardPage() {
                       </>
                     )}
                   </span>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </>
+    )
+  }
+
+  // FORGOT PASSWORD VIEW
+  if (step === 'forgot') {
+    return (
+      <>
+        <Head><title>Forgot Password | BTP Growth</title></Head>
+        <div className="min-h-screen bg-slate-50 relative flex items-center justify-center p-4 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/20 blur-[120px]" />
+            <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] rounded-full bg-indigo-400/20 blur-[120px]" />
+          </div>
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="w-full max-w-md relative z-10">
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40">
+              <button onClick={() => { setStep('login'); setError('') }} className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-900 font-medium mb-6 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                {t('affiliate.forgot.backToLogin')}
+              </button>
+              <h1 className="text-2xl font-bold text-slate-900 mb-2">{t('affiliate.forgot.title')}</h1>
+              <p className="text-slate-500 text-sm mb-8">{t('affiliate.forgot.subtitle')}</p>
+
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5 ml-1">{t('affiliate.forgot.emailLabel')}</label>
+                  <input type="email" value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} placeholder="your@email.com"
+                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                    onKeyDown={(e) => e.key === 'Enter' && handleForgotPassword()}
+                  />
+                </div>
+
+                <AnimatePresence>
+                  {error && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                      className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl border border-red-100"
+                    ><p>{error}</p></motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button onClick={handleForgotPassword} disabled={loading}
+                  className="w-full bg-blue-600 text-white font-semibold py-4 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-70"
+                >
+                  {loading ? t('affiliate.forgot.sending') : t('affiliate.forgot.sendCode')}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </>
+    )
+  }
+
+  // RESET PASSWORD VIEW (enter OTP + new password)
+  if (step === 'reset') {
+    return (
+      <>
+        <Head><title>Reset Password | BTP Growth</title></Head>
+        <div className="min-h-screen bg-slate-50 relative flex items-center justify-center p-4 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/20 blur-[120px]" />
+            <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] rounded-full bg-indigo-400/20 blur-[120px]" />
+          </div>
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="w-full max-w-md relative z-10">
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40">
+              <button onClick={() => { setStep('forgot'); setError(''); setSuccessMsg('') }} className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-900 font-medium mb-6 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                {t('affiliate.forgot.backToLogin')}
+              </button>
+              <h1 className="text-2xl font-bold text-slate-900 mb-2">{t('affiliate.reset.title')}</h1>
+              <p className="text-slate-500 text-sm mb-8">{t('affiliate.reset.subtitle')}</p>
+
+              <AnimatePresence>
+                {successMsg && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+                    className="bg-emerald-50 text-emerald-700 text-sm px-4 py-3 rounded-xl border border-emerald-100 mb-5"
+                  ><p>✅ {successMsg}</p></motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5 ml-1">{t('affiliate.reset.otpLabel')}</label>
+                  <input type="text" value={resetOtp} onChange={(e) => setResetOtp(e.target.value)} placeholder="123 456"
+                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-mono text-lg font-bold text-center tracking-[0.3em]"
+                    maxLength={7}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5 ml-1">{t('affiliate.reset.newPasswordLabel')}</label>
+                  <input type="password" value={resetNewPassword} onChange={(e) => setResetNewPassword(e.target.value)} placeholder="••••••••"
+                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                  />
+                  <p className="text-xs text-slate-400 mt-1.5 ml-1">{t('affiliate.reset.passwordHint')}</p>
+                </div>
+
+                <AnimatePresence>
+                  {error && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                      className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl border border-red-100"
+                    ><p>{error}</p></motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button onClick={handleResetPassword} disabled={loading}
+                  className="w-full bg-blue-600 text-white font-semibold py-4 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-70"
+                >
+                  {loading ? t('affiliate.reset.resetting') : t('affiliate.reset.button')}
                 </button>
               </div>
             </div>

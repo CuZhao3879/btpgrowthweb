@@ -201,16 +201,41 @@
   "affiliate": {
     "login": {
       "title": "Affiliate Program",
-      "subtitle": "Log in to view your commissions and manage payouts.",
-      "selectApp": "Select App",
-      "userId": "Your BTP Login ID",
-      "userIdHint": "Find this in Monvo AI app → Settings → Affiliate",
-      "userIdPlaceholder": "e.g. 83901234",
+      "subtitle": "Log in with your BTP username and password.",
+      "username": "Username",
+      "usernamePlaceholder": "e.g. zhangsan",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
       "button": "Access Dashboard",
       "authenticating": "Authenticating...",
-      "errorEmpty": "Please enter your BTP Login ID",
-      "errorNotFound": "Affiliate account not found. Please register from the Monvo AI app first.",
+      "errorEmptyUsername": "Please enter your username",
+      "errorEmptyPassword": "Please enter your password",
+      "errorNotFound": "Account not found. Please register from the Monvo AI app first.",
+      "errorWrongPassword": "Incorrect password. Please try again.",
+      "errorPasswordNotSet": "Your account needs a password. Please use 'Forgot password' to set one.",
       "errorNetwork": "Network error. Please check your connection."
+    },
+    "forgot": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your registered email address and we will send you a verification code.",
+      "emailLabel": "Email Address",
+      "sendCode": "Send Verification Code",
+      "sending": "Sending...",
+      "otpSent": "Verification code sent to your email.",
+      "errorInvalidEmail": "Please enter a valid email address.",
+      "backToLogin": "Back to login"
+    },
+    "reset": {
+      "title": "Reset Password",
+      "subtitle": "Enter the 6-digit code from your email and your new password.",
+      "otpLabel": "Verification Code",
+      "newPasswordLabel": "New Password",
+      "passwordHint": "At least 6 characters",
+      "button": "Reset Password",
+      "resetting": "Resetting...",
+      "success": "Password reset successfully! You can now log in.",
+      "errorEmptyOtp": "Please enter the verification code.",
+      "errorWeakPassword": "Password must be at least 6 characters."
     },
     "dashboard": {
       "title": "Affiliate Program",
