@@ -287,7 +287,7 @@ export default function AdminPayoutsPage() {
                       {p.admin_notes && (
                         <div className="col-span-2 bg-slate-50 rounded-xl p-4 border border-slate-100">
                           <p className="text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wide">Admin Log</p>
-                          <p className="text-sm font-medium text-slate-700 italic">"{p.admin_notes}"</p>
+                          <p className="text-sm font-medium text-slate-700 italic">&quot;{p.admin_notes}&quot;</p>
                         </div>
                       )}
                     </div>
