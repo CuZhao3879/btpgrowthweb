@@ -69,22 +69,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Deduct from pending balances
       if (voidedCommissions && voidedCommissions.length > 0) {
         for (const comm of voidedCommissions) {
-          await supabaseAdmin
+          // Fetch current balance and deduct the voided commission
+          const { data: aff } = await supabaseAdmin
             .from('affiliates')
-            .update({
-              balance_pending: supabaseAdmin.rpc ? 0 : 0, // Will use raw SQL below
-            })
+            .select('balance_pending')
             .eq('id', comm.affiliate_id)
+            .single()
 
-          // Use direct SQL for atomic balance deduction
-          await supabaseAdmin.rpc('', {}).catch(() => {})
-          await supabaseAdmin
-            .from('affiliates')
-            .update({
-              balance_pending: 0, // Simplified — in production, use an RPC
-              updated_at: new Date().toISOString(),
-            })
-            .eq('id', comm.affiliate_id)
+          if (aff) {
+            const newPending = Math.max(0, parseFloat(aff.balance_pending) - parseFloat(comm.commission_amount))
+            await supabaseAdmin
+              .from('affiliates')
+              .update({
+                balance_pending: newPending,
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', comm.affiliate_id)
+          }
         }
       }
 
