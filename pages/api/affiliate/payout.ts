@@ -8,6 +8,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import bcrypt from 'bcryptjs'
+import { verifyAffiliateToken } from '@/lib/affiliate-jwt'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -15,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { source_app, source_user_id, username, password, payout_email } = req.body
+    const { source_app, source_user_id, username, password, token, payout_email } = req.body
 
     if (!payout_email) {
       return res.status(400).json({ error: 'payout_email is required' })
@@ -41,7 +42,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       affiliate = found
     }
-    // Auth path 2: source_app + source_user_id (from app)
+    // Auth path 2: JWT token (from web session)
+    else if (token) {
+      const payload = verifyAffiliateToken(token)
+      if (!payload) {
+        return res.status(401).json({ error: 'Session expired. Please log in again.' })
+      }
+      const { data: found } = await supabaseAdmin
+        .from('affiliates')
+        .select('*')
+        .eq('id', payload.sub)
+        .single()
+      if (!found) {
+        return res.status(404).json({ error: 'Affiliate not found' })
+      }
+      affiliate = found
+    }
+    // Auth path 3: source_app + source_user_id (from app)
     else if (source_app && source_user_id) {
       // Try connections table first
       const { data: conn } = await supabaseAdmin
@@ -97,6 +114,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (pendingPayout) {
       return res.status(400).json({ error: 'You already have a pending payout request.' })
+    }
+
+    // Rate limit: max 1 payout request per 24 hours
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const { data: recentPayout } = await supabaseAdmin
+      .from('payouts')
+      .select('id, requested_at')
+      .eq('affiliate_id', affiliate.id)
+      .gte('requested_at', twentyFourHoursAgo)
+      .order('requested_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (recentPayout) {
+      return res.status(429).json({ error: 'You can only request one payout per 24 hours. Please try again later.' })
     }
 
     // Create payout request

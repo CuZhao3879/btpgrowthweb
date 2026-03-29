@@ -2,7 +2,8 @@
  * API: Get affiliate dashboard data (V2)
  * POST /api/affiliate/dashboard
  *
- * Login from Web:  { username, password }
+ * Login from Web:  { username, password } → returns token + data
+ * Refresh via Web: { token }             → returns data (no password needed)
  * Login from App:  { source_app, source_user_id }
  *
  * Returns: full dashboard data (earnings, referrals, tier info)
@@ -10,6 +11,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import bcrypt from 'bcryptjs'
+import { signAffiliateToken, verifyAffiliateToken } from '@/lib/affiliate-jwt'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -17,9 +19,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { source_app, source_user_id, username, password } = req.body
+    const { source_app, source_user_id, username, password, token } = req.body
 
     let affiliate: any = null
+    let isTokenAuth = false
 
     // -------------------------------------------------------
     // Auth path 1: Web login with username + password
@@ -38,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Check if this is a migrated user with no password yet
       if (!found.password_hash) {
         return res.status(403).json({
-          error: 'Please reset your password first via the "Forgot Password" option.',
+          error: 'Please reset your password first via the \"Forgot Password\" option.',
           code: 'PASSWORD_NOT_SET',
           email_hint: found.email ? found.email.replace(/(.{2})(.*)(@.*)/, '$1***$3') : null,
         })
@@ -52,7 +55,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       affiliate = found
     }
     // -------------------------------------------------------
-    // Auth path 2: App login with source_app + source_user_id
+    // Auth path 2: Token-based session (from previously-logged-in web user)
+    // -------------------------------------------------------
+    else if (token) {
+      const payload = verifyAffiliateToken(token)
+      if (!payload) {
+        return res.status(401).json({ error: 'Session expired. Please log in again.', code: 'TOKEN_EXPIRED' })
+      }
+
+      const { data: found } = await supabaseAdmin
+        .from('affiliates')
+        .select('*')
+        .eq('id', payload.sub)
+        .single()
+
+      if (!found) {
+        return res.status(404).json({ error: 'Account not found', code: 'NOT_FOUND' })
+      }
+
+      affiliate = found
+      isTokenAuth = true
+    }
+    // -------------------------------------------------------
+    // Auth path 3: App login with source_app + source_user_id
     // -------------------------------------------------------
     else if (source_app && source_user_id) {
       // Look up via affiliate_connections first
@@ -87,7 +112,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(404).json({ error: 'Affiliate not found' })
       }
     } else {
-      return res.status(400).json({ error: 'Provide (username + password) or (source_app + source_user_id)' })
+      return res.status(400).json({ error: 'Provide (username + password), token, or (source_app + source_user_id)' })
     }
 
     // -------------------------------------------------------
@@ -108,7 +133,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .eq('parent_id', affiliate.id)
       .order('created_at', { ascending: false })
 
-    // Get recent commissions
+    // Get recent commissions (for display list only — NOT for totals)
     const { data: recentCommissions } = await supabaseAdmin
       .from('commissions')
       .select('*')
@@ -130,18 +155,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .select('source_app, created_at')
       .eq('affiliate_id', affiliate.id)
 
-    // Calculate this month's earnings
-    const now = new Date()
-    const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
-    const monthlyCommissions = (recentCommissions || []).filter(
-      (c) => c.created_at >= firstOfMonth
-    )
-    const monthlyEarnings = monthlyCommissions.reduce(
+    // --- Accurate earnings via aggregate queries (NOT limited to 50) ---
+
+    // Total lifetime earnings
+    const { data: totalAgg } = await supabaseAdmin
+      .from('commissions')
+      .select('commission_amount')
+      .eq('affiliate_id', affiliate.id)
+
+    const totalEarnings = (totalAgg || []).reduce(
       (sum, c) => sum + parseFloat(c.commission_amount), 0
     )
 
-    // Total lifetime earnings
-    const totalEarnings = (recentCommissions || []).reduce(
+    // This month's earnings
+    const now = new Date()
+    const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+
+    const { data: monthlyAgg } = await supabaseAdmin
+      .from('commissions')
+      .select('commission_amount')
+      .eq('affiliate_id', affiliate.id)
+      .gte('created_at', firstOfMonth)
+
+    const monthlyEarnings = (monthlyAgg || []).reduce(
       (sum, c) => sum + parseFloat(c.commission_amount), 0
     )
 
@@ -151,7 +187,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const tiers = Object.entries(tierThresholds)
     const nextTier = currentTierIndex < tiers.length - 1 ? tiers[currentTierIndex + 1] : null
 
+    // Generate a token for web logins (username+password)
+    // Token auth users already have a token, no need to regenerate
+    const sessionToken = (!isTokenAuth && username && password)
+      ? signAffiliateToken(affiliate.id, affiliate.username)
+      : undefined
+
     return res.status(200).json({
+      ...(sessionToken ? { token: sessionToken } : {}),
       affiliate: {
         id: affiliate.id,
         username: affiliate.username,

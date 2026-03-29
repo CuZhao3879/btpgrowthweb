@@ -273,6 +273,37 @@
         "indirect": "Sub-affiliate",
         "require": "Requires",
         "users": "Users"
+      },
+      "commissions": {
+        "title": "Commission History",
+        "empty": "No commissions yet",
+        "emptyDesc": "Share your referral code to start earning from subscriptions.",
+        "date": "Date",
+        "grossRevenue": "Gross Revenue",
+        "rate": "Rate",
+        "commission": "Commission",
+        "level": "Level",
+        "status": "Status"
+      },
+      "team": {
+        "title": "Your Network",
+        "members": "Members",
+        "empty": "No team members yet",
+        "emptyDesc": "When someone registers using your code, they will appear here.",
+        "joined": "Joined",
+        "referrals": "referrals"
+      },
+      "payout": {
+        "title": "Payout History",
+        "availableBalance": "Available Balance",
+        "minAmount": "Minimum payout amount is",
+        "viaPaypal": "Payments are made via PayPal.",
+        "paypalEmail": "PayPal Email Address",
+        "requestButton": "Request Payout",
+        "processing": "Processing...",
+        "empty": "No payout requests yet",
+        "emptyDesc": "Once you request a payout, its status will appear here.",
+        "signOut": "Sign Out"
       }
     }
   }

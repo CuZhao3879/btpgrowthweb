@@ -59,7 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({
       valid: true,
       already_referred: false,
-      affiliate_id: affiliate.id,
       affiliate_display_name: affiliate.display_name || 'A friend',
       discount_percent: 10,
     })

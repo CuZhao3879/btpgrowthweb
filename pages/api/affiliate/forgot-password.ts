@@ -42,6 +42,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
     }
 
+    // Rate limit: max 1 OTP per 60 seconds per email
+    const sixtySecondsAgo = new Date(Date.now() - 60 * 1000).toISOString()
+    const { data: recentOtp } = await supabaseAdmin
+      .from('password_resets')
+      .select('id')
+      .eq('email', emailClean)
+      .gte('created_at', sixtySecondsAgo)
+      .limit(1)
+      .single()
+
+    if (recentOtp) {
+      return res.status(429).json({
+        error: 'Please wait 60 seconds before requesting another code.',
+      })
+    }
+
     // Invalidate any existing unused OTPs for this email
     await supabaseAdmin
       .from('password_resets')

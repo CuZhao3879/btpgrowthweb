@@ -2,7 +2,7 @@
  * BTP Growth — Affiliate Dashboard Page
  * /affiliate/dashboard
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -61,6 +61,7 @@ type DashboardData = {
     requested_at: string
     completed_at: string | null
   }>
+  connected_apps?: string[]
 }
 
 const TIER_CONFIG: Record<string, { label: string; icon: string; color: string; t1: string; t2: string; req: string }> = {
@@ -72,7 +73,7 @@ const TIER_CONFIG: Record<string, { label: string; icon: string; color: string; 
 
 export default function AffiliateDashboardPage() {
   const { t } = useLanguage()
-  const [step, setStep] = useState<'login' | 'forgot' | 'reset' | 'dashboard'>('login')
+  const [step, setStep] = useState<'loading' | 'login' | 'forgot' | 'reset' | 'dashboard'>('loading')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
@@ -82,6 +83,9 @@ export default function AffiliateDashboardPage() {
   const [loginUsername, setLoginUsername] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+
+  // Session token (stored in localStorage, never password)
+  const [sessionToken, setSessionToken] = useState<string | null>(null)
 
   // Forgot/Reset password state
   const [resetEmail, setResetEmail] = useState('')
@@ -94,6 +98,65 @@ export default function AffiliateDashboardPage() {
   const [payoutLoading, setPayoutLoading] = useState(false)
   const [payoutMessage, setPayoutMessage] = useState('')
   const [activeTab, setActiveTab] = useState<'overview' | 'commissions' | 'team' | 'payouts'>('overview')
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const [codeCopied, setCodeCopied] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    if (!showUserMenu) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showUserMenu])
+
+  // Try to restore session from localStorage on mount
+  useEffect(() => {
+    const savedToken = localStorage.getItem('btp_affiliate_token')
+    if (savedToken) {
+      // Attempt to refresh dashboard with saved token
+      refreshWithToken(savedToken)
+    } else {
+      setStep('login')
+    }
+  }, [])
+
+  const refreshWithToken = async (token: string) => {
+    try {
+      const res = await fetch('/api/affiliate/dashboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      })
+      const result = await res.json()
+      if (res.ok) {
+        setData(result)
+        setSessionToken(token)
+        setStep('dashboard')
+      } else {
+        // Token expired or invalid — clear and show login
+        localStorage.removeItem('btp_affiliate_token')
+        setStep('login')
+      }
+    } catch {
+      localStorage.removeItem('btp_affiliate_token')
+      setStep('login')
+    }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('btp_affiliate_token')
+    setSessionToken(null)
+    setData(null)
+    setLoginUsername('')
+    setLoginPassword('')
+    setStep('login')
+    setShowUserMenu(false)
+  }
 
   const handleLogin = async () => {
     if (!loginUsername.trim()) {
@@ -114,7 +177,13 @@ export default function AffiliateDashboardPage() {
       })
       const result = await res.json()
       if (res.ok) {
+        // Save token to localStorage and clear password from memory
+        if (result.token) {
+          localStorage.setItem('btp_affiliate_token', result.token)
+          setSessionToken(result.token)
+        }
         setData(result)
+        setLoginPassword('') // Clear password from memory immediately
         setStep('dashboard')
       } else if (result.code === 'NOT_FOUND') {
         setError(t('affiliate.login.errorNotFound'))
@@ -204,6 +273,11 @@ export default function AffiliateDashboardPage() {
       setPayoutMessage('Please enter a valid PayPal email')
       return
     }
+    if (!sessionToken) {
+      setPayoutMessage('Session expired. Please log in again.')
+      handleLogout()
+      return
+    }
     setPayoutLoading(true)
     setPayoutMessage('')
     try {
@@ -211,16 +285,15 @@ export default function AffiliateDashboardPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: loginUsername.trim(),
-          password: loginPassword,
+          token: sessionToken,
           payout_email: payoutEmail.trim(),
         }),
       })
       const result = await res.json()
       if (res.ok) {
         setPayoutMessage(`✅ Payout of $${result.payout.amount.toFixed(2)} requested successfully!`)
-        // Refresh data
-        handleLogin()
+        // Refresh data with token
+        refreshWithToken(sessionToken)
       } else {
         setPayoutMessage(`❌ ${result.error}`)
       }
@@ -232,6 +305,24 @@ export default function AffiliateDashboardPage() {
   }
 
   const tierConfig = data ? TIER_CONFIG[data.affiliate.tier] || TIER_CONFIG.starter : TIER_CONFIG.starter
+
+  // LOADING VIEW (checking saved session)
+  if (step === 'loading') {
+    return (
+      <>
+        <Head><title>Affiliate Dashboard | BTP Growth</title></Head>
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <svg className="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p className="text-slate-500 text-sm font-medium">Restoring session...</p>
+          </div>
+        </div>
+      </>
+    )
+  }
 
   // LOGIN VIEW
   if (step === 'login') {
@@ -496,18 +587,49 @@ export default function AffiliateDashboardPage() {
                 </div>
               </div>
               
-              <div className="flex items-center gap-4 bg-slate-50 pr-4 pl-1.5 py-1.5 rounded-full border border-slate-200">
-                <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center text-sm font-bold text-blue-600 overflow-hidden">
-                  {data.affiliate.avatar_url ? (
-                    <img src={data.affiliate.avatar_url} alt={data.affiliate.display_name} className="w-full h-full object-cover" />
-                  ) : (
-                    (data.affiliate.display_name || 'A')[0].toUpperCase()
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center gap-4 bg-slate-50 pr-4 pl-1.5 py-1.5 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center text-sm font-bold text-blue-600 overflow-hidden">
+                    {data.affiliate.avatar_url ? (
+                      <img src={data.affiliate.avatar_url} alt={data.affiliate.display_name} className="w-full h-full object-cover" />
+                    ) : (
+                      (data.affiliate.display_name || 'A')[0].toUpperCase()
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-slate-900 leading-tight">{data.affiliate.display_name || 'Affiliate'}</p>
+                    <p className="text-[11px] font-mono text-slate-500 leading-tight">{data.affiliate.referral_code}</p>
+                  </div>
+                  <svg className={`w-4 h-4 text-slate-400 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+
+                {/* User Dropdown Menu */}
+                <AnimatePresence>
+                  {showUserMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50"
+                    >
+                      <div className="px-4 py-3 border-b border-slate-100">
+                        <p className="text-sm font-bold text-slate-900">{data.affiliate.display_name}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{data.affiliate.email}</p>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        Sign Out
+                      </button>
+                    </motion.div>
                   )}
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-slate-900 leading-tight">{data.affiliate.display_name || 'Affiliate'}</p>
-                  <p className="text-[11px] font-mono text-slate-500 leading-tight">{data.affiliate.referral_code}</p>
-                </div>
+                </AnimatePresence>
               </div>
             </div>
           </div>
@@ -624,18 +746,47 @@ export default function AffiliateDashboardPage() {
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(data.affiliate.referral_code)
-                        // Could add a toast notification here
+                        setCodeCopied(true)
+                        setTimeout(() => setCodeCopied(false), 2000)
                       }}
-                      className="w-full bg-slate-900 text-white font-semibold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md flex items-center justify-center gap-2 group"
+                      className={`w-full font-semibold py-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 group ${
+                        codeCopied
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-slate-900 text-white hover:bg-slate-800'
+                      }`}
                     >
-                      <svg className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                      {t('affiliate.dashboard.referral.copyButton')}
+                      {codeCopied ? (
+                        <>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                          {t('affiliate.dashboard.referral.copyButton')}
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
 
                 {/* Tier Structure Info */}
                 <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-8">
+
+                  {/* Connected Apps */}
+                  {data.connected_apps && data.connected_apps.length > 0 && (
+                    <div className="mb-6 pb-6 border-b border-slate-100">
+                      <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Connected Apps</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {data.connected_apps.map((app) => (
+                          <span key={app} className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-100">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                            {app === 'monvo_ai' ? 'Monvo AI' : app}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <h3 className="text-base font-semibold text-slate-900 mb-6 flex items-center gap-2">
                     <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     {t('affiliate.dashboard.tierStructure.title')}
@@ -669,12 +820,12 @@ export default function AffiliateDashboardPage() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                <h3 className="text-xl font-bold text-slate-900 mb-6">Commission History</h3>
+                <h3 className="text-xl font-bold text-slate-900 mb-6">{t('affiliate.dashboard.commissions.title')}</h3>
                 {data.recent_commissions.length === 0 ? (
                   <div className="bg-white rounded-2xl p-12 border border-slate-200 shadow-sm text-center">
                     <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">📈</div>
-                    <p className="text-slate-900 font-semibold mb-1">No commissions yet</p>
-                    <p className="text-slate-500 text-sm">Share your referral code to start earning from subscriptions.</p>
+                    <p className="text-slate-900 font-semibold mb-1">{t('affiliate.dashboard.commissions.empty')}</p>
+                    <p className="text-slate-500 text-sm">{t('affiliate.dashboard.commissions.emptyDesc')}</p>
                   </div>
                 ) : (
                   <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden custom-scrollbar">
@@ -682,12 +833,12 @@ export default function AffiliateDashboardPage() {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 text-xs uppercase tracking-wider">
-                            <th className="text-left px-6 py-4 font-semibold">Date</th>
-                            <th className="text-left px-6 py-4 font-semibold">Gross Revenue</th>
-                            <th className="text-left px-6 py-4 font-semibold">Rate</th>
-                            <th className="text-left px-6 py-4 font-semibold">Commission</th>
-                            <th className="text-center px-6 py-4 font-semibold">Level</th>
-                            <th className="text-right px-6 py-4 font-semibold">Status</th>
+                            <th className="text-left px-6 py-4 font-semibold">{t('affiliate.dashboard.commissions.date')}</th>
+                            <th className="text-left px-6 py-4 font-semibold">{t('affiliate.dashboard.commissions.grossRevenue')}</th>
+                            <th className="text-left px-6 py-4 font-semibold">{t('affiliate.dashboard.commissions.rate')}</th>
+                            <th className="text-left px-6 py-4 font-semibold">{t('affiliate.dashboard.commissions.commission')}</th>
+                            <th className="text-center px-6 py-4 font-semibold">{t('affiliate.dashboard.commissions.level')}</th>
+                            <th className="text-right px-6 py-4 font-semibold">{t('affiliate.dashboard.commissions.status')}</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -733,15 +884,15 @@ export default function AffiliateDashboardPage() {
                 transition={{ duration: 0.2 }}
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-slate-900">Your Network</h3>
-                  <span className="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">{data.direct_team.length} Members</span>
+                  <h3 className="text-xl font-bold text-slate-900">{t('affiliate.dashboard.team.title')}</h3>
+                  <span className="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">{data.direct_team.length} {t('affiliate.dashboard.team.members')}</span>
                 </div>
                 
                 {data.direct_team.length === 0 ? (
                   <div className="bg-white rounded-2xl p-12 border border-slate-200 shadow-sm text-center">
                     <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🤝</div>
-                    <p className="text-slate-900 font-semibold mb-1">No team members yet</p>
-                    <p className="text-slate-500 text-sm">When someone registers using your code, they will appear here.</p>
+                    <p className="text-slate-900 font-semibold mb-1">{t('affiliate.dashboard.team.empty')}</p>
+                    <p className="text-slate-500 text-sm">{t('affiliate.dashboard.team.emptyDesc')}</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -754,7 +905,7 @@ export default function AffiliateDashboardPage() {
                             </div>
                             <div>
                               <p className="font-bold text-slate-900 leading-tight mb-0.5">{member.display_name || 'Anonymous'}</p>
-                              <p className="text-[11px] text-slate-500 font-medium tracking-wide uppercase">Joined {new Date(member.created_at).toLocaleDateString()}</p>
+                              <p className="text-[11px] text-slate-500 font-medium tracking-wide uppercase">{t('affiliate.dashboard.team.joined')} {new Date(member.created_at).toLocaleDateString()}</p>
                             </div>
                           </div>
                         </div>
@@ -762,7 +913,7 @@ export default function AffiliateDashboardPage() {
                           <span className="text-xs bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full font-semibold text-slate-700 flex items-center gap-1.5">
                             {TIER_CONFIG[member.tier]?.icon} {TIER_CONFIG[member.tier]?.label}
                           </span>
-                          <p className="text-sm font-semibold text-slate-700"><span className="text-blue-600">{member.total_paid_referrals}</span> referrals</p>
+                          <p className="text-sm font-semibold text-slate-700"><span className="text-blue-600">{member.total_paid_referrals}</span> {t('affiliate.dashboard.team.referrals')}</p>
                         </div>
                       </div>
                     ))}
@@ -783,17 +934,17 @@ export default function AffiliateDashboardPage() {
                 {/* Request Payout Section */}
                 <div className="lg:col-span-1 border border-slate-200 shadow-sm mb-6 lg:mb-0">
                   <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-t-2xl p-6 text-white text-center rounded-b-none">
-                    <p className="text-blue-100 text-sm font-medium mb-1.5">Available Balance</p>
+                    <p className="text-blue-100 text-sm font-medium mb-1.5">{t('affiliate.dashboard.payout.availableBalance')}</p>
                     <p className="text-4xl font-extrabold">${data.affiliate.balance_cleared.toFixed(2)}</p>
                   </div>
                   <div className="bg-white p-6 rounded-b-2xl">
                     <p className="text-sm text-slate-500 mb-5 text-center">
-                      Minimum payout amount is <strong>$15.00</strong>. Payments are made via PayPal.
+                      {t('affiliate.dashboard.payout.minAmount')} <strong>$15.00</strong>. {t('affiliate.dashboard.payout.viaPaypal')}
                     </p>
                     
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">PayPal Email Address</label>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">{t('affiliate.dashboard.payout.paypalEmail')}</label>
                         <input
                           type="email"
                           value={payoutEmail}
@@ -807,7 +958,7 @@ export default function AffiliateDashboardPage() {
                         disabled={payoutLoading || data.affiliate.balance_cleared < 15}
                         className="w-full bg-slate-900 text-white font-semibold py-3.5 rounded-xl hover:bg-slate-800 transition-all shadow-md disabled:opacity-50 disabled:hover:bg-slate-900 disabled:shadow-none"
                       >
-                        {payoutLoading ? 'Processing...' : 'Request Payout'}
+                        {payoutLoading ? t('affiliate.dashboard.payout.processing') : t('affiliate.dashboard.payout.requestButton')}
                       </button>
                     </div>
 
@@ -827,12 +978,12 @@ export default function AffiliateDashboardPage() {
 
                 {/* Payout History */}
                 <div className="lg:col-span-2">
-                  <h3 className="text-xl font-bold text-slate-900 mb-6">Payout History</h3>
+                  <h3 className="text-xl font-bold text-slate-900 mb-6">{t('affiliate.dashboard.payout.title')}</h3>
                   {data.payouts.length === 0 ? (
                     <div className="bg-white rounded-2xl p-12 border border-slate-200 shadow-sm text-center">
                       <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">💸</div>
-                      <p className="text-slate-900 font-semibold mb-1">No payout requests yet</p>
-                      <p className="text-slate-500 text-sm">Once you request a payout, its status will appear here.</p>
+                      <p className="text-slate-900 font-semibold mb-1">{t('affiliate.dashboard.payout.empty')}</p>
+                      <p className="text-slate-500 text-sm">{t('affiliate.dashboard.payout.emptyDesc')}</p>
                     </div>
                   ) : (
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

@@ -8,10 +8,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
-const ADMIN_SECRET = process.env.AFFILIATE_ADMIN_SECRET || 'btp-admin-2026'
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Simple auth check
+  // Simple auth check — AFFILIATE_ADMIN_SECRET must be set in environment
+  const ADMIN_SECRET = process.env.AFFILIATE_ADMIN_SECRET
+  if (!ADMIN_SECRET) {
+    return res.status(500).json({ error: 'Admin endpoint not configured. Set AFFILIATE_ADMIN_SECRET env var.' })
+  }
+
   const authHeader = req.headers['x-admin-secret'] as string
   if (authHeader !== ADMIN_SECRET) {
     return res.status(403).json({ error: 'Unauthorized' })
@@ -77,6 +80,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .update({ status: 'paid' })
         .eq('affiliate_id', data.affiliate_id)
         .eq('status', 'cleared')
+    }
+
+    // If rejecting, restore the affiliate's balance (was zeroed when payout was requested)
+    if (status === 'rejected' && data) {
+      const payoutAmount = parseFloat(data.amount)
+      // Get current balance to add back
+      const { data: aff } = await supabaseAdmin
+        .from('affiliates')
+        .select('balance_cleared')
+        .eq('id', data.affiliate_id)
+        .single()
+
+      if (aff) {
+        await supabaseAdmin
+          .from('affiliates')
+          .update({
+            balance_cleared: parseFloat(aff.balance_cleared) + payoutAmount,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', data.affiliate_id)
+      }
     }
 
     return res.status(200).json({ payout: data })

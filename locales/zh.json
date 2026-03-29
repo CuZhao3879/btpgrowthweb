@@ -276,6 +276,37 @@
         "indirect": "团队",
         "require": "权益门槛:",
         "users": "个有效用户的积累"
+      },
+      "commissions": {
+        "title": "佣金记录",
+        "empty": "暂无佣金记录",
+        "emptyDesc": "分享你的推广码，当有人通过你的码订阅后即可开始赚取佣金。",
+        "date": "日期",
+        "grossRevenue": "总收入",
+        "rate": "比例",
+        "commission": "佣金",
+        "level": "层级",
+        "status": "状态"
+      },
+      "team": {
+        "title": "我的团队",
+        "members": "位成员",
+        "empty": "暂无团队成员",
+        "emptyDesc": "当有人通过你的推广码注册推广员后会出现在这里。",
+        "joined": "加入于",
+        "referrals": "个推荐"
+      },
+      "payout": {
+        "title": "提现记录",
+        "availableBalance": "可提现余额",
+        "minAmount": "最低提现金额为",
+        "viaPaypal": "通过 PayPal 进行付款。",
+        "paypalEmail": "PayPal 邮箱地址",
+        "requestButton": "申请提现",
+        "processing": "处理中...",
+        "empty": "暂无提现记录",
+        "emptyDesc": "当你发起提现申请后，状态会显示在这里。",
+        "signOut": "退出登录"
       }
     }
   }

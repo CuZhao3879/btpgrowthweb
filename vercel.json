@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/clear-commissions",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
