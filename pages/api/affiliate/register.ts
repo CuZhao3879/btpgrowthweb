@@ -156,6 +156,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       attempts++
     }
 
+    // Generate unique btp_login_id (8-digit numeric string)
+    let btp_login_id = Math.floor(Math.random() * 90000000 + 10000000).toString()
+    let loginIdAttempts = 0
+    while (loginIdAttempts < 10) {
+      const { data: checkLoginId } = await supabaseAdmin
+        .from('affiliates')
+        .select('id')
+        .eq('btp_login_id', btp_login_id)
+        .single()
+      if (!checkLoginId) break
+      btp_login_id = Math.floor(Math.random() * 90000000 + 10000000).toString()
+      loginIdAttempts++
+    }
+
     // Hash password
     const password_hash = await bcrypt.hash(password, 10)
 
@@ -168,6 +182,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         username: usernameClean,
         password_hash,
         referral_code,
+        btp_login_id,
         parent_id,
         avatar_url,
         tier: 'starter',

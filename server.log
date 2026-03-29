@@ -1,0 +1,25 @@
+
+> btp-growth-solutions@1.0.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+  ▲ Next.js 14.2.33
+  - Local:        http://localhost:3001
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1127ms
+ ✓ Compiled /api/affiliate/register in 125ms (182 modules)
+Error creating affiliate: {
+  code: '23502',
+  details: 'Failing row contains (a62e9e34-0ffa-43ce-9f7a-586600ee7e92, monvo_ai, testuseruuid_123, test_abc123@test.com, Test ABC, BTP_BW7CUW, starter, null, 0, 0.00, 0.00, null, 2026-03-29 09:36:33.542807+00, 2026-03-29 09:36:33.542807+00, null, test_user_abc123, $2b$10$jUeZ4K0Zo6C6HzkgTRssDOrABP.Q6zhjkB3/SlE6xfKJ5pKOhfQj2, null).',
+  hint: null,
+  message: 'null value in column "btp_login_id" of relation "affiliates" violates not-null constraint'
+}
+ POST /api/affiliate/register 500 in 765ms
+ ✓ Compiled in 77ms (182 modules)
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 665ms (867 modules)
+ POST /api/affiliate/register 404 in 942ms
+ ✓ Compiled in 72ms (684 modules)
