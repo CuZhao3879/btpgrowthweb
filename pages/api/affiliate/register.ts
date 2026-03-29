@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { source_app, source_user_id, email, display_name, username, password, parent_referral_code } = req.body
+    const { source_app, source_user_id, email, display_name, username, password, parent_referral_code, avatar_url } = req.body
 
     if (!source_app || !source_user_id) {
       return res.status(400).json({ error: 'source_app and source_user_id are required' })
@@ -83,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // -------------------------------------------------------
     const { data: existingByEmail } = await supabaseAdmin
       .from('affiliates')
-      .select('id, username, referral_code, display_name')
+      .select('id, username, referral_code, display_name, avatar_url')
       .eq('email', emailClean)
       .single()
 
@@ -97,6 +97,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           source_user_id,
         })
         .single()
+
+      if (avatar_url && !existingByEmail.avatar_url) {
+        // Opportunistically save the avatar if the existing account doesn't have one yet
+        await supabaseAdmin.from('affiliates').update({ avatar_url }).eq('id', existingByEmail.id)
+      }
 
       return res.status(200).json({
         already_member: true,
@@ -164,6 +169,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         password_hash,
         referral_code,
         parent_id,
+        avatar_url,
         tier: 'starter',
         // Keep source_app and source_user_id for backward compat during migration
         source_app,

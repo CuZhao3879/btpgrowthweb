@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { source_app, source_user_id, username, password } = req.body
+    const { source_app, source_user_id, username, password, avatar_url } = req.body
 
     if (!source_app || !source_user_id) {
       return res.status(400).json({ error: 'source_app and source_user_id are required' })
@@ -102,15 +102,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Hash password and update
     const password_hash = await bcrypt.hash(password, 10)
 
+    const updatePayload: any = {
+      username: usernameClean,
+      password_hash,
+      updated_at: new Date().toISOString(),
+    }
+    if (avatar_url) {
+      updatePayload.avatar_url = avatar_url
+    }
+
     const { data: updated, error: updateError } = await supabaseAdmin
       .from('affiliates')
-      .update({
-        username: usernameClean,
-        password_hash,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updatePayload)
       .eq('id', affiliate.id)
-      .select('id, username, referral_code, display_name, email')
+      .select('id, username, referral_code, display_name, email, avatar_url')
       .single()
 
     if (updateError) {

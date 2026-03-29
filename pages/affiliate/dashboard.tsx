@@ -16,6 +16,7 @@ type DashboardData = {
     display_name: string
     email: string
     payout_email: string
+    avatar_url?: string | null
     total_paid_referrals: number
     balance_pending: number
     balance_cleared: number
@@ -481,51 +482,56 @@ export default function AffiliateDashboardPage() {
       <Head>
         <title>Dashboard — {data.affiliate.display_name || 'Affiliate'} | BTP Growth</title>
       </Head>
-      <div className="min-h-screen bg-slate-50 text-slate-900 pt-16">
-        {/* Header */}
-        <div className="bg-white border-b border-slate-200 sticky top-16 z-30">
-          <div className="max-w-6xl mx-auto px-4 py-4 sm:py-5 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
-                <Image src="/images/logo.png" alt="BTP Growth" width={40} height={40} className="w-full h-full object-contain" />
+      <div className="min-h-screen bg-slate-50 text-slate-900 pt-24 pb-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+        <div className="w-full max-w-[1280px] bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 overflow-hidden flex flex-col min-h-[80vh]">
+          {/* Header */}
+          <div className="bg-white border-b border-slate-100 z-30">
+            <div className="px-6 py-5 sm:px-8 flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
+                  <Image src="/images/logo.png" alt="BTP Growth" width={40} height={40} className="w-full h-full object-contain" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-slate-900 leading-tight">{t('affiliate.dashboard.title')}</h1>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-slate-900 leading-tight">{t('affiliate.dashboard.title')}</h1>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4 bg-slate-50 pr-4 pl-1.5 py-1.5 rounded-full border border-slate-200">
-              <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center text-sm font-bold text-blue-600">
-                {(data.affiliate.display_name || 'A')[0].toUpperCase()}
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-semibold text-slate-900 leading-tight">{data.affiliate.display_name || 'Affiliate'}</p>
-                <p className="text-[11px] font-mono text-slate-500 leading-tight">{data.affiliate.referral_code}</p>
+              
+              <div className="flex items-center gap-4 bg-slate-50 pr-4 pl-1.5 py-1.5 rounded-full border border-slate-200">
+                <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center text-sm font-bold text-blue-600 overflow-hidden">
+                  {data.affiliate.avatar_url ? (
+                    <img src={data.affiliate.avatar_url} alt={data.affiliate.display_name} className="w-full h-full object-cover" />
+                  ) : (
+                    (data.affiliate.display_name || 'A')[0].toUpperCase()
+                  )}
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-slate-900 leading-tight">{data.affiliate.display_name || 'Affiliate'}</p>
+                  <p className="text-[11px] font-mono text-slate-500 leading-tight">{data.affiliate.referral_code}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Tabs */}
-        <div className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-[138px] sm:top-[146px] z-20">
-          <div className="max-w-6xl mx-auto px-4 flex gap-6 overflow-x-auto no-scrollbar">
-            {(['overview', 'commissions', 'team', 'payouts'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`py-4 text-sm font-semibold border-b-2 transition-colors capitalize whitespace-nowrap ${
-                  activeTab === tab
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-slate-500 hover:text-slate-900'
-                }`}
-              >
-                {t(`affiliate.dashboard.tabs.${tab}`)}
-              </button>
-            ))}
+          {/* Tabs */}
+          <div className="bg-white/80 backdrop-blur-md border-b border-slate-100 z-20 px-6 sm:px-8">
+            <div className="flex gap-8 overflow-x-auto no-scrollbar">
+              {(['overview', 'commissions', 'team', 'payouts'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`py-4 text-sm font-semibold border-b-2 transition-colors capitalize whitespace-nowrap ${
+                    activeTab === tab
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  {t(`affiliate.dashboard.tabs.${tab}`)}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="p-6 sm:p-8 flex-1 bg-slate-50/50">
           <AnimatePresence mode="wait">
             {activeTab === 'overview' && (
               <motion.div
@@ -867,6 +873,7 @@ export default function AffiliateDashboardPage() {
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
         </div>
       </div>
     </>
