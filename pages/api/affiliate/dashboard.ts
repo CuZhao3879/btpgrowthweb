@@ -207,7 +207,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         balance_pending: parseFloat(affiliate.balance_pending),
         balance_cleared: parseFloat(affiliate.balance_cleared),
         avatar_url: affiliate.avatar_url,
-        needs_setup: !affiliate.password_hash, // true if user hasn't set a password yet
+        needs_setup: !affiliate.password_hash || !affiliate.username || affiliate.username.startsWith('user_'), // true if missing password or has temp username
       },
       stats: {
         total_referrals: (referrals || []).length,
