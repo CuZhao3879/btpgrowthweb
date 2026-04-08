@@ -127,6 +127,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       affiliate = newAffiliate
     }
 
+    // Final null guard (should never happen after auto-create above)
+    if (!affiliate) {
+      return res.redirect('/affiliate/dashboard?error=create_failed')
+    }
+
     // Issue a BTP dashboard JWT (same format as manual login)
     const jwt = signAffiliateToken(affiliate.id, affiliate.username || affiliate.email)
 
