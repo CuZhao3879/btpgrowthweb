@@ -2,11 +2,9 @@
  * API: Auto-Login for Vronk AI Affiliates
  * GET /api/affiliate/auto-login?token=XXX
  *
- * Verifies a signed token from Vronk AI, finds the affiliate,
+ * Verifies a signed token from Vronk AI, finds (or creates) the affiliate,
  * issues a BTP JWT, and returns a small HTML page that stores the
  * JWT in localStorage before redirecting to the dashboard.
- *
- * We can't just set a cookie because the dashboard reads from localStorage.
  */
 import type { NextApiRequest, NextApiResponse } from 'next'
 import crypto from 'crypto'
@@ -63,22 +61,76 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Find the affiliate in BTP database
-    const { data: affiliate } = await supabaseAdmin
+    let { data: affiliate } = await supabaseAdmin
       .from('affiliates')
       .select('id, username, email')
       .eq('source_app', APP_ID)
       .eq('source_user_id', payload.userId)
       .single()
 
+    // Auto-create if affiliate doesn't exist yet (webhook may have been missed)
     if (!affiliate) {
-      return res.redirect('/affiliate/dashboard?error=not_found')
+      console.log(`[Auto-Login] Affiliate not found, auto-creating for: ${payload.email}`)
+
+      // Generate unique BTP login ID
+      let btpLoginId: string
+      while (true) {
+        btpLoginId = Math.floor(Math.random() * 90000000 + 10000000).toString()
+        const { data: conflict } = await supabaseAdmin
+          .from('affiliates')
+          .select('id')
+          .eq('btp_login_id', btpLoginId)
+          .single()
+        if (!conflict) break
+      }
+
+      const tempUsername = `user_${payload.userId.replace(/-/g, '').substring(0, 8).toLowerCase()}`
+
+      const { data: newAffiliate, error: insertErr } = await supabaseAdmin.from('affiliates').insert({
+        source_app: APP_ID,
+        source_user_id: payload.userId,
+        email: payload.email,
+        referral_code: payload.referralCode || `VRK${payload.userId.replace(/-/g, '').substring(0, 8).toUpperCase()}`,
+        btp_login_id: btpLoginId,
+        username: tempUsername,
+        tier: 'starter',
+      }).select().single()
+
+      if (insertErr || !newAffiliate) {
+        console.error('[Auto-Login] Failed to create affiliate:', insertErr)
+        return res.redirect('/affiliate/dashboard?error=create_failed')
+      }
+
+      // Also create affiliate_connection
+      await supabaseAdmin.from('affiliate_connections').insert({
+        affiliate_id: newAffiliate.id,
+        source_app: APP_ID,
+        source_user_id: payload.userId,
+      })
+
+      // Ensure app exists
+      await supabaseAdmin
+        .from('apps')
+        .upsert({
+          id: APP_ID,
+          name: 'Vronk AI',
+          icon_url: 'https://vronkai.com/icons/vronk-logo.png',
+          tier_rates: {
+            starter: { t1: 0.20, t2: 0 },
+            pro: { t1: 0.20, t2: 0.05 },
+            elite: { t1: 0.20, t2: 0.05 },
+            partner: { t1: 0.25, t2: 0.05 },
+          },
+          is_active: true,
+        }, { onConflict: 'id' })
+
+      affiliate = newAffiliate
     }
 
     // Issue a BTP dashboard JWT (same format as manual login)
     const jwt = signAffiliateToken(affiliate.id, affiliate.username || affiliate.email)
 
     // Return a small HTML page that stores the JWT in localStorage and redirects
-    // This is necessary because the dashboard reads auth from localStorage, not cookies
     const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -94,12 +146,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #64748b;
     }
-    .loader {
-      text-align: center;
-    }
+    .loader { text-align: center; }
     .spinner {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       border: 3px solid #e2e8f0;
       border-top-color: #3b82f6;
       border-radius: 50%;
