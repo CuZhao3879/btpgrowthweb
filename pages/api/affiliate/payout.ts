@@ -97,10 +97,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const availableBalance = parseFloat(affiliate.balance_cleared)
 
-    // Check minimum payout threshold ($15)
-    if (availableBalance < 15) {
+    // Check minimum payout threshold ($10)
+    if (availableBalance < 10) {
       return res.status(400).json({
-        error: `Minimum payout is $15.00. Your available balance is $${availableBalance.toFixed(2)}.`
+        error: `Minimum payout is $10.00. Your available balance is $${availableBalance.toFixed(2)}.`
       })
     }
 
