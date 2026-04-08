@@ -21,60 +21,73 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { token } = req.query
 
   if (!token || typeof token !== 'string') {
-    return res.redirect('/affiliate/dashboard?error=missing_token')
+    return res.status(400).json({ error: 'Missing token', step: 'validate_input' })
   }
 
   const secret = process.env.VRONK_AI_WEBHOOK_SECRET
   if (!secret) {
-    return res.status(500).json({ error: 'Server configuration error' })
+    return res.status(500).json({
+      error: 'VRONK_AI_WEBHOOK_SECRET not configured on BTP Growth',
+      step: 'check_secret',
+    })
   }
 
   try {
-    // Split token: payload.signature
+    // Step 1: Split token
     const parts = token.split('.')
     if (parts.length !== 2) {
-      return res.redirect('/affiliate/dashboard?error=invalid_token')
+      return res.status(400).json({ error: 'Invalid token format', step: 'split_token' })
     }
 
     const [payloadB64, signature] = parts
 
-    // Verify HMAC signature
+    // Step 2: Verify HMAC signature
     const expectedSig = crypto
       .createHmac('sha256', secret)
       .update(payloadB64)
       .digest('base64url')
 
     if (signature !== expectedSig) {
-      return res.redirect('/affiliate/dashboard?error=invalid_signature')
+      return res.status(401).json({ error: 'Invalid token signature', step: 'verify_signature' })
     }
 
-    // Decode and validate payload
+    // Step 3: Decode payload
     const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString())
 
     if (!payload.userId || !payload.exp) {
-      return res.redirect('/affiliate/dashboard?error=invalid_payload')
+      return res.status(400).json({ error: 'Invalid token payload', step: 'decode_payload', payload })
     }
 
-    // Check expiry
+    // Step 4: Check expiry
     if (Date.now() > payload.exp) {
-      return res.redirect('/affiliate/dashboard?error=token_expired')
+      return res.status(401).json({ error: 'Token expired', step: 'check_expiry' })
     }
 
-    // Find the affiliate in BTP database
-    let { data: affiliate } = await supabaseAdmin
+    // Step 5: Check Supabase config
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return res.status(500).json({
+        error: 'Supabase env vars missing on BTP Growth Vercel',
+        step: 'check_supabase_env',
+        hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+        hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      })
+    }
+
+    // Step 6: Find the affiliate in BTP database
+    const { data: existingAffiliate, error: findError } = await supabaseAdmin
       .from('affiliates')
       .select('id, username, email')
       .eq('source_app', APP_ID)
       .eq('source_user_id', payload.userId)
       .single()
 
-    // Auto-create if affiliate doesn't exist yet (webhook may have been missed)
-    if (!affiliate) {
-      console.log(`[Auto-Login] Affiliate not found, auto-creating for: ${payload.email}`)
+    let affiliate = existingAffiliate
 
+    // Step 7: Auto-create if not found
+    if (!affiliate) {
       // Generate unique BTP login ID
-      let btpLoginId: string
-      while (true) {
+      let btpLoginId: string = ''
+      for (let i = 0; i < 10; i++) {
         btpLoginId = Math.floor(Math.random() * 90000000 + 10000000).toString()
         const { data: conflict } = await supabaseAdmin
           .from('affiliates')
@@ -94,14 +107,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         btp_login_id: btpLoginId,
         username: tempUsername,
         tier: 'starter',
-      }).select().single()
+      }).select('id, username, email').single()
 
       if (insertErr || !newAffiliate) {
-        console.error('[Auto-Login] Failed to create affiliate:', insertErr)
-        return res.redirect('/affiliate/dashboard?error=create_failed')
+        return res.status(500).json({
+          error: 'Failed to create affiliate record',
+          step: 'create_affiliate',
+          detail: insertErr?.message || 'Unknown insert error',
+        })
       }
 
-      // Also create affiliate_connection
+      // Create affiliate_connection
       await supabaseAdmin.from('affiliate_connections').insert({
         affiliate_id: newAffiliate.id,
         source_app: APP_ID,
@@ -127,15 +143,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       affiliate = newAffiliate
     }
 
-    // Final null guard (should never happen after auto-create above)
     if (!affiliate) {
-      return res.redirect('/affiliate/dashboard?error=create_failed')
+      return res.status(500).json({ error: 'Affiliate is null after all steps', step: 'final_check' })
     }
 
-    // Issue a BTP dashboard JWT (same format as manual login)
+    // Step 8: Issue JWT and return HTML that stores it in localStorage
     const jwt = signAffiliateToken(affiliate.id, affiliate.username || affiliate.email)
 
-    // Return a small HTML page that stores the JWT in localStorage and redirects
     const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -169,16 +183,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     <p>Signing you in...</p>
   </div>
   <script>
-    localStorage.setItem('btp_affiliate_token', ${JSON.stringify(jwt)});
-    window.location.replace('/affiliate/dashboard');
+    try {
+      localStorage.setItem('btp_affiliate_token', ${JSON.stringify(jwt)});
+      window.location.replace('/affiliate/dashboard');
+    } catch(e) {
+      document.querySelector('p').textContent = 'Error: ' + e.message;
+    }
   </script>
 </body>
 </html>`
 
     res.setHeader('Content-Type', 'text/html')
+    res.setHeader('Cache-Control', 'no-store')
     return res.status(200).send(html)
-  } catch (err) {
-    console.error('[Auto-Login] Error:', err)
-    return res.redirect('/affiliate/dashboard?error=auth_failed')
+  } catch (err: any) {
+    return res.status(500).json({
+      error: 'Unhandled error in auto-login',
+      step: 'catch_block',
+      detail: err?.message || String(err),
+    })
   }
 }
