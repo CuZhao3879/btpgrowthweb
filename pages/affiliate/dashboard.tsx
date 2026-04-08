@@ -776,12 +776,18 @@ export default function AffiliateDashboardPage() {
                   {/* Connected Apps */}
                   {data.connected_apps && data.connected_apps.length > 0 && (
                     <div className="mb-6 pb-6 border-b border-slate-100">
-                      <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Connected Apps</h4>
-                      <div className="flex flex-wrap gap-2">
+                      <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Connected Apps</h4>
+                      <div className="flex flex-wrap gap-3">
                         {data.connected_apps.map((app) => (
-                          <span key={app} className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-100">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                            {app === 'monvo_ai' ? 'Monvo AI' : app}
+                          <span key={app} className="inline-flex items-center gap-2.5 bg-white text-slate-700 text-[15px] font-bold px-4 py-2 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            {app === 'monvo_ai' ? (
+                              <Image src="/images/monvoai-icon.jpg" alt="Monvo AI" width={22} height={22} className="rounded-md object-contain border border-slate-100" />
+                            ) : app === 'vronk_ai' ? (
+                              <Image src="/images/vronkai-logo.jpg" alt="Vronk AI" width={22} height={22} className="rounded-md object-contain border border-slate-100" />
+                            ) : (
+                              <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                            )}
+                            {app === 'monvo_ai' ? 'Monvo AI' : app === 'vronk_ai' ? 'Vronk AI' : app}
                           </span>
                         ))}
                       </div>
