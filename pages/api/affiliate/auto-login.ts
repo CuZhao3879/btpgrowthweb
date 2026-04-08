@@ -73,8 +73,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
     }
 
-    // Step 6: Find the affiliate in BTP database
-    const { data: existingAffiliate, error: findError } = await supabaseAdmin
+    // Step 6: Find the affiliate in BTP database (by source_app + source_user_id)
+    const { data: existingAffiliate } = await supabaseAdmin
       .from('affiliates')
       .select('id, username, email')
       .eq('source_app', APP_ID)
@@ -83,7 +83,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let affiliate = existingAffiliate
 
-    // Step 7: Auto-create if not found
+    // Step 6b: Fallback — find by email if source lookup failed
+    if (!affiliate && payload.email) {
+      const { data: emailMatch } = await supabaseAdmin
+        .from('affiliates')
+        .select('id, username, email')
+        .eq('email', payload.email)
+        .single()
+
+      if (emailMatch) {
+        // Link existing record to Vronk AI
+        await supabaseAdmin
+          .from('affiliates')
+          .update({ source_app: APP_ID, source_user_id: payload.userId })
+          .eq('id', emailMatch.id)
+
+        // Also ensure affiliate_connection exists
+        const { data: existingConn } = await supabaseAdmin
+          .from('affiliate_connections')
+          .select('id')
+          .eq('affiliate_id', emailMatch.id)
+          .eq('source_app', APP_ID)
+          .single()
+
+        if (!existingConn) {
+          await supabaseAdmin.from('affiliate_connections').insert({
+            affiliate_id: emailMatch.id,
+            source_app: APP_ID,
+            source_user_id: payload.userId,
+          })
+        }
+
+        affiliate = emailMatch
+      }
+    }
+
+    // Step 7: Auto-create if still not found
     if (!affiliate) {
       // Generate unique BTP login ID
       let btpLoginId: string = ''
