@@ -89,14 +89,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .maybeSingle()
 
     if (existingByEmail) {
-      // Link this app's user to the existing affiliate (upsert to handle retries)
+      // Remove any old connections for this affiliate+app combo (e.g. user deleted and re-registered)
       await supabaseAdmin
         .from('affiliate_connections')
-        .upsert({
+        .delete()
+        .eq('affiliate_id', existingByEmail.id)
+        .eq('source_app', source_app)
+
+      // Create fresh connection with the new source_user_id
+      await supabaseAdmin
+        .from('affiliate_connections')
+        .insert({
           affiliate_id: existingByEmail.id,
           source_app,
           source_user_id,
-        }, { onConflict: 'source_app,source_user_id' })
+        })
+
+      // Also update the legacy source_user_id on the affiliates table
+      await supabaseAdmin
+        .from('affiliates')
+        .update({ source_user_id })
+        .eq('id', existingByEmail.id)
 
       if (avatar_url && !existingByEmail.avatar_url) {
         // Opportunistically save the avatar if the existing account doesn't have one yet
