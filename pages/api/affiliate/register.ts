@@ -88,15 +88,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .single()
 
     if (existingByEmail) {
-      // Link this app's user to the existing affiliate
+      // Link this app's user to the existing affiliate (upsert to handle retries)
       await supabaseAdmin
         .from('affiliate_connections')
-        .insert({
+        .upsert({
           affiliate_id: existingByEmail.id,
           source_app,
           source_user_id,
-        })
-        .single()
+        }, { onConflict: 'source_app,source_user_id' })
 
       if (avatar_url && !existingByEmail.avatar_url) {
         // Opportunistically save the avatar if the existing account doesn't have one yet
