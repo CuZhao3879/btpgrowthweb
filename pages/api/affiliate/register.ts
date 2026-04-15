@@ -63,7 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .select('affiliate_id')
       .eq('source_app', source_app)
       .eq('source_user_id', source_user_id)
-      .single()
+      .maybeSingle()
 
     if (existingConn) {
       // Already registered from this app — fetch and return their data
@@ -85,7 +85,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .from('affiliates')
       .select('id, username, referral_code, display_name, avatar_url')
       .eq('email', emailClean)
-      .single()
+      .limit(1)
+      .maybeSingle()
 
     if (existingByEmail) {
       // Link this app's user to the existing affiliate (upsert to handle retries)
@@ -117,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .from('affiliates')
       .select('id')
       .eq('username', usernameClean)
-      .single()
+      .maybeSingle()
 
     if (existingUsername) {
       return res.status(409).json({

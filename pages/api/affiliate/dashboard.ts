@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .select('affiliate_id')
         .eq('source_app', source_app)
         .eq('source_user_id', source_user_id)
-        .single()
+        .maybeSingle()
 
       if (conn) {
         const { data: found } = await supabaseAdmin
@@ -104,7 +104,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           .select('*')
           .eq('source_app', source_app)
           .eq('source_user_id', source_user_id)
-          .single()
+          .limit(1)
+          .maybeSingle()
         affiliate = found
       }
 
