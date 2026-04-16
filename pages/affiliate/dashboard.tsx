@@ -160,7 +160,7 @@ export default function AffiliateDashboardPage() {
 
   const handleLogin = async () => {
     if (!loginUsername.trim()) {
-      setError(t('affiliate.login.errorEmptyUsername'))
+      setError(t('affiliate.login.errorEmptyLogin'))
       return
     }
     if (!loginPassword) {
@@ -252,7 +252,9 @@ export default function AffiliateDashboardPage() {
         setLoginUsername(result.username || '')
         setLoginPassword('')
         setStep('login')
-        setSuccessMsg(t('affiliate.reset.success'))
+        // Show username prominently in success message so user can remember it
+        const usernameInfo = result.username ? ` ${result.username}` : ''
+        setSuccessMsg(result.username ? t('affiliate.reset.successWithUsername') + usernameInfo : t('affiliate.reset.success'))
         // Clear reset state
         setResetEmail('')
         setResetOtp('')
@@ -355,12 +357,12 @@ export default function AffiliateDashboardPage() {
 
               <div className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5 ml-1">{t('affiliate.login.username')}</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5 ml-1">{t('affiliate.login.usernameOrEmail')}</label>
                   <input
                     type="text"
                     value={loginUsername}
                     onChange={(e) => setLoginUsername(e.target.value)}
-                    placeholder={t('affiliate.login.usernamePlaceholder')}
+                    placeholder={t('affiliate.login.usernameOrEmailPlaceholder')}
                     autoCapitalize="none"
                     autoCorrect="off"
                     className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"

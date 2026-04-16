@@ -25,14 +25,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let isTokenAuth = false
 
     // -------------------------------------------------------
-    // Auth path 1: Web login with username + password
+    // Auth path 1: Web login with username/email + password
     // -------------------------------------------------------
     if (username && password) {
+      const loginInput = username.trim().toLowerCase()
+      const isEmail = loginInput.includes('@')
+
       const { data: found, error } = await supabaseAdmin
         .from('affiliates')
         .select('*')
-        .eq('username', username.trim().toLowerCase())
-        .single()
+        .eq(isEmail ? 'email' : 'username', loginInput)
+        .maybeSingle()
 
       if (error || !found) {
         return res.status(404).json({ error: 'Account not found', code: 'NOT_FOUND' })
