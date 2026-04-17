@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           valid: true,
           already_referred: true,
           affiliate_display_name: affiliate.display_name || 'A friend',
-          discount_percent: 10,
+          discount_percent: 30,
           message: 'You have already been referred'
         })
       }
@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       valid: true,
       already_referred: false,
       affiliate_display_name: affiliate.display_name || 'A friend',
-      discount_percent: 10,
+      discount_percent: 30,
     })
   } catch (err) {
     console.error('Validate code error:', err)
